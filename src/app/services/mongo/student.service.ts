@@ -39,11 +39,11 @@ export class StudentService implements StudentRepository<Student> {
   }
 
   listAll(): Promise<Student[]> {
-    return this.studentModel.find().exec();
+    return Promise.resolve(this.studentModel.find({}));
   }
 
   findByUuid(uuid: string): Promise<Student | null> {
-    return this.studentModel.findOne({ uuid }).exec();
+    return Promise.resolve(this.studentModel.findOne({ uuid }));
   }
 
   save(entity: Student): Promise<Student | null> {

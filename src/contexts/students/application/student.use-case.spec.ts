@@ -1,5 +1,5 @@
 import { StudentUseCase } from './student.use-case';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   Student,
   StudentDocument,
@@ -18,46 +18,48 @@ describe('StudentUseCase', () => {
       providers: [
         {
           provide: getModelToken(Student.name),
-          useValue: Model,
+          useValue: Model<StudentDocument>,
         },
         StudentService,
       ],
     }).compile();
-    studentModel = await module.get<Model<StudentDocument>>(
+    studentModel = module.get<Model<StudentDocument>>(
       getModelToken(Student.name),
     );
-    studentService = await module.get<StudentService>(StudentService);
+    studentService = module.get<StudentService>(StudentService);
   });
 
-  // it('should be defined', () => {
-  //   expect(studentService).toBeDefined();
-  // });
-
-  // beforeEach(() => {
-  //   studentModel = new Model<StudentDocument>();
-  //   studentService = new StudentService(studentModel);
-  //   studentUseCase = new StudentUseCase(studentService);
-  // });
+  it('should be defined', () => {
+    expect(studentService).toBeDefined();
+  });
 
   describe('listAll', () => {
     it('should return an array of students', async () => {
       // arrange
+      const mockedUserList = [
+        {
+          _id: new Types.ObjectId(),
+          lastName: 'John',
+          email: 'john@gmail.com',
+          name: 'John',
+        },
+        {
+          _id: new Types.ObjectId(),
+          lastName: 'Smith',
+          email: 'smith@gmail.com',
+          name: 'Smith',
+        },
+      ];
+      const expected = [...mockedUserList];
+
       studentUseCase = new StudentUseCase(studentService);
-      const student = new Student();
-      student.name = 'Julian';
-      student.lastName = 'Lasso';
-      student.email = 'julian.lasso@gmail.com';
-      student.status = false;
-      const simulation = new Promise<Student[]>((resolve, reject) => {
-        resolve([student]);
-      });
-      const expected = [student];
+      jest.spyOn(studentModel, 'find').mockResolvedValue(mockedUserList);
 
       // act
-      const spy = jest.spyOn(studentModel, 'find').mockReturnThis();
+      const data = await studentUseCase.listAll();
 
       // assert
-      expect(await studentUseCase.listAll()).toBe(expected);
+      expect(data.toString()).toBe(expected.toString());
     });
   });
 });
