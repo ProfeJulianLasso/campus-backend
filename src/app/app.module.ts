@@ -4,10 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // Database Configuration
-import { MongoConfigService } from 'src/database/mongo/mongo-config.service';
+import { MongoConfigService } from '../database/mongo/mongo-config.service';
 
 // Environment
-import environment from 'src/environment/environment';
+import environment from '../environment/environment';
 
 // Schemas
 import { Student, StudentSchema } from './models/mongo/student.schema';
@@ -16,7 +16,7 @@ import { Student, StudentSchema } from './models/mongo/student.schema';
 import { StudentService } from './services/mongo/student.service';
 
 // Controllers
-import { StudentsController } from './packages/student/students.controller';
+import { StudentsController } from './packages/students/students.controller';
 
 @Module({
   imports: [

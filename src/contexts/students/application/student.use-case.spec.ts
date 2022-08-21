@@ -29,25 +29,31 @@ describe('StudentUseCase', () => {
     studentService = module.get<StudentService>(StudentService);
   });
 
-  it('should be defined', () => {
+  it('studentService should be defined', () => {
     expect(studentService).toBeDefined();
   });
 
-  describe('listAll', () => {
+  describe('List all students', () => {
     it('should return an array of students', async () => {
       // arrange
       const mockedUserList = [
         {
           _id: new Types.ObjectId(),
-          lastName: 'John',
-          email: 'john@gmail.com',
-          name: 'John',
+          uuid: '23bcac0c-b464-459b-a99d-f31fcc1a23e0',
+          name: 'Julian',
+          lastName: 'Lasso',
+          email: 'julian.lasso@sofka.com.co',
+          status: 1,
+          createdAt: new Date(),
         },
         {
           _id: new Types.ObjectId(),
-          lastName: 'Smith',
-          email: 'smith@gmail.com',
-          name: 'Smith',
+          uuid: 'd0b06d12-6c0a-4177-902d-e81f33616954',
+          name: 'Raúl',
+          lastName: 'Alzate',
+          email: 'raul.alzate@sofka.com.co',
+          status: 0,
+          createdAt: new Date(),
         },
       ];
       const expected = [...mockedUserList];

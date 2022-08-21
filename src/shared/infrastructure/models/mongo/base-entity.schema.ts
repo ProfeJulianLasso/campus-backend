@@ -31,7 +31,7 @@ export abstract class BaseEntitySchema {
   readonly createdAt: Date;
 
   @Prop()
-  readonly updatedAt: Date;
+  updatedAt: Date;
 
   @Prop()
   readonly deletedAt: Date;

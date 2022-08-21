@@ -1,5 +1,6 @@
 import { StudentEntity } from '../domain/entities/student.entity';
 import { StudentRepository } from '../domain/repositories/student.repository';
+import { merge } from 'lodash';
 
 export class StudentUseCase {
   constructor(
@@ -14,14 +15,14 @@ export class StudentUseCase {
     return this.studentRepository.findByUuid(uuid);
   }
 
-  public findByEmail(email: string): Promise<StudentEntity[]> {
+  public findByEmail(email: string): Promise<StudentEntity | null> {
     return this.studentRepository.findByEmail(email);
   }
 
   public async findByFullName(fullname: string): Promise<StudentEntity[]> {
     const name = await this.studentRepository.findByName(fullname);
     const lastName = await this.studentRepository.findByLastName(fullname);
-    return [...name, ...lastName];
+    return merge(name, lastName);
   }
 
   public register(student: StudentEntity): Promise<StudentEntity | null> {
@@ -40,11 +41,11 @@ export class StudentUseCase {
     this.studentRepository.delete(uuid);
   }
 
-  public activate(uuid: string): Promise<boolean> {
+  public activate(uuid: string): Promise<boolean | null> {
     return this.studentRepository.enable(uuid);
   }
 
-  public deactivate(uuid: string): Promise<boolean> {
+  public deactivate(uuid: string): Promise<boolean | null> {
     return this.studentRepository.disable(uuid);
   }
 }

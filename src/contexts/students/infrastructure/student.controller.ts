@@ -15,10 +15,6 @@ export class StudentController {
     this.domainEvents = DomainEventHandler.Instance;
   }
 
-  /**
-   * Obtener todos los estudiantes
-   * All the obtained students
-   */
   async getAllStudents(): Promise<void> {
     const students = await this.studentUseCase.listAll();
     this.domainEvents.EventEmitter.emit(
@@ -31,6 +27,22 @@ export class StudentController {
     const student = await this.studentUseCase.findByUuid(id);
     this.domainEvents.EventEmitter.emit(
       DomainEvents.Students_UUIDFound,
+      student,
+    );
+  }
+
+  async findByFullName(fullname: string): Promise<void> {
+    const students = await this.studentUseCase.findByFullName(fullname);
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Students_FullNameFound,
+      students,
+    );
+  }
+
+  async findByEmail(email: string): Promise<void> {
+    const student = await this.studentUseCase.findByEmail(email);
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Students_EmailFound,
       student,
     );
   }

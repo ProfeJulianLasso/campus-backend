@@ -1,17 +1,19 @@
 // Libraries
 import { Response } from 'express';
-import { DomainEvents } from 'src/contexts/domain-events.enum';
-import { DomainEventHandler } from 'src/contexts/domain-events.handler';
 import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
+import { DomainEventHandler } from '../../../contexts/domain-events.handler';
+
+// Enums
+import { DomainEvents } from '../../../contexts/domain-events.enum';
 
 // Entities
-import { StudentEntity } from 'src/contexts/students/domain/entities/student.entity';
+import { StudentEntity } from '../../../contexts/students/domain/entities/student.entity';
 
 // Services
 import { StudentService } from '../../services/mongo/student.service';
 
 // Controllers
-import { StudentController } from 'src/contexts/students/infrastructure/student.controller';
+import { StudentController } from '../../../contexts/students/infrastructure/student.controller';
 
 @Controller('student')
 export class StudentsController {
@@ -50,5 +52,43 @@ export class StudentsController {
 
     // Crear solicitud
     this.domainEvents.EventEmitter.emit(DomainEvents.Students_FindByUUID, id);
+  }
+
+  @Get('fullname/:fullname')
+  findByFullname(
+    @Param('fullname') fullname: string,
+    @Res() response: Response,
+  ): void {
+    // Escuchar la respuesta de la solicitud
+    this.domainEvents.EventEmitter.on(
+      DomainEvents.Students_FullNameFound,
+      (students: StudentEntity[]) => {
+        if (!response.headersSent)
+          response.status(HttpStatus.OK).json(students);
+      },
+    );
+
+    // Crear solicitud
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Students_FindByFullName,
+      fullname,
+    );
+  }
+
+  @Get('email/:email')
+  findByEmail(@Param('email') email: string, @Res() response: Response): void {
+    // Escuchar la respuesta de la solicitud
+    this.domainEvents.EventEmitter.on(
+      DomainEvents.Students_EmailFound,
+      (student: StudentEntity) => {
+        if (!response.headersSent) response.status(HttpStatus.OK).json(student);
+      },
+    );
+
+    // Crear solicitud
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Students_FindByEmail,
+      email,
+    );
   }
 }

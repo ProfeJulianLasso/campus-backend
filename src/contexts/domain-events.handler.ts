@@ -26,14 +26,34 @@ export class DomainEventHandler {
     return this.eventEmitter;
   }
 
+  /**
+   * En presente
+   * @param controller
+   */
   public loadContextStudents(controller: StudentController): void {
     if (!this.statusLoadContextStudents) {
       this.eventEmitter.on(DomainEvents.Students_GetAllStudents, () => {
         controller.getAllStudents();
       });
+
       this.eventEmitter.on(DomainEvents.Students_FindByUUID, (id: string) => {
         controller.findByUUID(id);
       });
+
+      this.eventEmitter.on(
+        DomainEvents.Students_FindByFullName,
+        (fullname: string) => {
+          controller.findByFullName(fullname);
+        },
+      );
+
+      this.eventEmitter.on(
+        DomainEvents.Students_FindByEmail,
+        (email: string) => {
+          controller.findByEmail(email);
+        },
+      );
+
       this.statusLoadContextStudents = true;
     }
   }

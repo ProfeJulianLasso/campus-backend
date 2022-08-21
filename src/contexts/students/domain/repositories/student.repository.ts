@@ -1,9 +1,9 @@
 import { BaseRepository } from 'src/shared/domain/repositories/base.repository';
 
 export interface StudentRepository<T> extends BaseRepository<T> {
-  findByEmail(email: string): Promise<T[]>;
+  findByEmail(email: string): Promise<T | null>;
   findByName(name: string): Promise<T[]>;
   findByLastName(lastName: string): Promise<T[]>;
-  enable(uuid: string): Promise<boolean>;
-  disable(uuid: string): Promise<boolean>;
+  enable(uuid: string): Promise<boolean | null>;
+  disable(uuid: string): Promise<boolean | null>;
 }
