@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    // "paths": {
+    //   "@student/*": [
+    //     "src/contexts/students/*"
+    //   ],
+    //   "@teacher/*": [
+    //     "src/contexts/teachers/*"
+    //   ],
+    //   "@shared/*": [
+    //     "src/shared/*"
+    //   ],
+    //   "@mongo/*": [
+    //     "./src/database/mongo/*"
+    //   ],
+    //   "@postgresql/*": [
+    //     "src/database/postgresql/*"
+    //   ],
+    //   "@database/*": [
+    //     "./src/database/*"
+    //   ],
+    //   "@domain/*": [
+    //     "./src/contexts/*"
+    //   ],
+    //   "@environment/*": [
+    //     "./src/environment/*"
+    //   ],
+    //   "@campus/*": [
+    //     "./src/*"
+    //   ]
+    // },
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
