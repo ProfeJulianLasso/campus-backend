@@ -32,7 +32,6 @@ export class Student extends BaseEntitySchema implements StudentEntity {
   @Prop({
     index: true,
     trim: true,
-    unique: true,
     required: [true, 'Email is required'],
     validate: {
       validator: (value: string) => {
@@ -63,4 +62,8 @@ export class Student extends BaseEntitySchema implements StudentEntity {
   status = Boolean(State.ACTIVE);
 }
 
-export const StudentSchema = SchemaFactory.createForClass(Student);
+const StudentSchema = SchemaFactory.createForClass(Student);
+
+StudentSchema.index({ email: 1, deletedAt: 1 }, { unique: true });
+
+export { StudentSchema };
