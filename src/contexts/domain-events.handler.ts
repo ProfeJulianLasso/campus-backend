@@ -33,63 +33,71 @@ export class DomainEventHandler {
     this.eventEmitter.on(command, callback);
   }
 
-  public apply(domainEvent: DomainEvents, callback: any): void {
-    this.eventEmitter.emit(domainEvent, callback);
+  public apply(domainEvent: DomainEvents, data?: any): void {
+    this.eventEmitter.emit(domainEvent, data);
   }
 
-  /**
-   * En presente
-   * @param controller
-   */
   public loadContextStudents(gateway: StudentGateway): void {
     if (!this.statusLoadContextStudents) {
-      this.eventEmitter.on(DomainEvents.Students_GetAllStudents, () => {
+      this.command(DomainEvents.Students_GetAllStudents, () => {
         gateway.getAllStudents();
       });
 
-      this.eventEmitter.on(DomainEvents.Students_FindByUUID, (id: string) => {
-        gateway.findByUUID(id);
-      });
+      this.command(
+        DomainEvents.Students_FindByUUID,
+        ({ uuid }: { uuid: string }) => {
+          gateway.findByUUID({ uuid });
+        },
+      );
 
-      this.eventEmitter.on(
+      this.command(
         DomainEvents.Students_FindByFullName,
-        (fullname: string) => {
-          gateway.findByFullName(fullname);
+        ({ fullname }: { fullname: string }) => {
+          gateway.findByFullName({ fullname });
         },
       );
 
-      this.eventEmitter.on(
+      this.command(
         DomainEvents.Students_FindByEmail,
-        (email: string) => {
-          gateway.findByEmail(email);
+        ({ email }: { email: string }) => {
+          gateway.findByEmail({ email });
         },
       );
 
-      this.eventEmitter.on(
+      this.command(
         DomainEvents.Student_Register,
-        (student: StudentEntity) => {
-          gateway.register(student);
+        ({ student }: { student: StudentEntity }) => {
+          gateway.register({ student });
         },
       );
 
-      this.eventEmitter.on(
+      this.command(
         DomainEvents.Student_Modify,
-        (uuid: string, student: StudentEntity) => {
-          gateway.modify(uuid, student);
+        ({ uuid, student }: { uuid: string; student: StudentEntity }) => {
+          gateway.modify({ uuid, student });
         },
       );
 
-      this.eventEmitter.on(DomainEvents.Student_Activate, (uuid: string) => {
-        gateway.activate(uuid);
-      });
+      this.command(
+        DomainEvents.Student_Activate,
+        ({ uuid }: { uuid: string }) => {
+          gateway.activate({ uuid });
+        },
+      );
 
-      this.eventEmitter.on(DomainEvents.Student_Deactivate, (uuid: string) => {
-        gateway.deactivate(uuid);
-      });
+      this.command(
+        DomainEvents.Student_Deactivate,
+        ({ uuid }: { uuid: string }) => {
+          gateway.deactivate({ uuid });
+        },
+      );
 
-      this.eventEmitter.on(DomainEvents.Student_Delete, (uuid: string) => {
-        gateway.remove(uuid);
-      });
+      this.command(
+        DomainEvents.Student_Delete,
+        ({ uuid }: { uuid: string }) => {
+          gateway.remove({ uuid });
+        },
+      );
 
       this.statusLoadContextStudents = true;
     }

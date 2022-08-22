@@ -41,7 +41,7 @@ export class StudentController {
   @Get()
   getAll(@Res() response: Response): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Students_AllTheObtainedStudents,
       (students: Student[]) => {
         if (!response.headersSent)
@@ -50,13 +50,13 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Students_GetAllStudents);
+    this.domainEvents.apply(DomainEvents.Students_GetAllStudents);
   }
 
-  @Get(':id')
-  findByUUID(@Param('id') id: string, @Res() response: Response): void {
+  @Get(':uuid')
+  findByUUID(@Param('uuid') uuid: string, @Res() response: Response): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Students_UUIDFound,
       (student: Student | null) => {
         if (!response.headersSent) response.status(HttpStatus.OK).json(student);
@@ -64,7 +64,7 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Students_FindByUUID, id);
+    this.domainEvents.apply(DomainEvents.Students_FindByUUID, { uuid });
   }
 
   @Get('fullname/:fullname')
@@ -73,7 +73,7 @@ export class StudentController {
     @Res() response: Response,
   ): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Students_FullNameFound,
       (students: Student[]) => {
         if (!response.headersSent)
@@ -82,10 +82,7 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(
-      DomainEvents.Students_FindByFullName,
-      fullname,
-    );
+    this.domainEvents.apply(DomainEvents.Students_FindByFullName, { fullname });
   }
 
   @Get('email/:email')
@@ -99,17 +96,14 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(
-      DomainEvents.Students_FindByEmail,
-      email,
-    );
+    this.domainEvents.apply(DomainEvents.Students_FindByEmail, { email });
   }
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   register(@Res() response: Response, @Body() student: Student): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Student_Registered,
       (newStudent: Student) => {
         if (!response.headersSent)
@@ -118,17 +112,18 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Student_Register, student);
+    // this.domainEvents.EventEmitter.emit(DomainEvents.Student_Register, student);
+    this.domainEvents.apply(DomainEvents.Student_Register, { student });
   }
 
-  @Put(':id')
+  @Put(':uuid')
   modify(
     @Res() response: Response,
-    @Param('id') id: string,
+    @Param('uuid') uuid: string,
     @Body() student: Student,
   ): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Student_Modified,
       (updatedStudent: Student | null) => {
         if (!response.headersSent)
@@ -137,17 +132,13 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(
-      DomainEvents.Student_Modify,
-      id,
-      student,
-    );
+    this.domainEvents.apply(DomainEvents.Student_Modify, { uuid, student });
   }
 
-  @Patch('activate/:id')
-  activate(@Res() response: Response, @Param('id') id: string): void {
+  @Patch('activate/:uuid')
+  activate(@Res() response: Response, @Param('uuid') uuid: string): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Student_Activated,
       (activationStatus: Student | null) => {
         if (!response.headersSent)
@@ -156,13 +147,13 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Student_Activate, id);
+    this.domainEvents.apply(DomainEvents.Student_Activate, { uuid });
   }
 
-  @Patch('deactivate/:id')
-  deactivate(@Res() response: Response, @Param('id') id: string): void {
+  @Patch('deactivate/:uuid')
+  deactivate(@Res() response: Response, @Param('uuid') uuid: string): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Student_Deactivated,
       (activationStatus: Student | null) => {
         if (!response.headersSent)
@@ -171,13 +162,13 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Student_Deactivate, id);
+    this.domainEvents.apply(DomainEvents.Student_Deactivate, { uuid });
   }
 
-  @Delete(':id')
-  remove(@Res() response: Response, @Param('id') id: string): void {
+  @Delete(':uuid')
+  remove(@Res() response: Response, @Param('uuid') uuid: string): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
+    this.domainEvents.command(
       DomainEvents.Student_Deleted,
       (deletedStatus: Student | null) => {
         if (!response.headersSent)
@@ -186,6 +177,6 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.EventEmitter.emit(DomainEvents.Student_Delete, id);
+    this.domainEvents.apply(DomainEvents.Student_Delete, { uuid });
   }
 }
