@@ -52,6 +52,7 @@ export class Student extends BaseEntitySchema implements StudentEntity {
   photo: string;
 
   @Prop({
+    type: Boolean,
     required: [true, 'Status is required'],
     default: State.ACTIVE,
     enum: {
@@ -59,7 +60,7 @@ export class Student extends BaseEntitySchema implements StudentEntity {
       message: 'The data "{VALUE}" is not a valid value',
     },
   })
-  status: boolean;
+  status = Boolean(State.ACTIVE);
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

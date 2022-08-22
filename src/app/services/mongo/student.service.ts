@@ -59,7 +59,7 @@ export class StudentService implements StudentRepository<Student> {
     );
   }
 
-  enable(uuid: string): Promise<boolean | null> {
+  enable(uuid: string): Promise<Student | null> {
     return Promise.resolve(
       this.studentModel.findOneAndUpdate(
         {
@@ -73,7 +73,7 @@ export class StudentService implements StudentRepository<Student> {
     );
   }
 
-  disable(uuid: string): Promise<boolean | null> {
+  disable(uuid: string): Promise<Student | null> {
     return Promise.resolve(
       this.studentModel.findOneAndUpdate(
         {
@@ -97,27 +97,28 @@ export class StudentService implements StudentRepository<Student> {
     );
   }
 
-  save(entity: Student): Promise<Student> {
-    return Promise.resolve(new this.studentModel(entity).save());
+  save(student: Student): Promise<Student> {
+    return Promise.resolve(new this.studentModel(student).save());
   }
 
-  update(entity: Student): Promise<Student | null> {
-    entity.updatedAt = new Date();
+  update(student: Student): Promise<Student | null> {
+    student.updatedAt = new Date();
     return Promise.resolve(
       this.studentModel.findOneAndUpdate(
         {
-          $and: [{ uuid: entity.uuid }, { deletedAt: null }],
+          $and: [{ uuid: student.uuid }, { deletedAt: null }],
         },
-        entity,
+        student,
       ),
     );
   }
 
-  delete(uuid: string): Promise<boolean> {
-    this.studentModel.updateOne(
-      { $and: [{ uuid }, { deletedAt: null }] },
-      { updatedAt: new Date(), deletedAt: new Date() },
+  delete(uuid: string): Promise<Student | null> {
+    return Promise.resolve(
+      this.studentModel.findOneAndUpdate(
+        { $and: [{ uuid }, { deletedAt: null }] },
+        { updatedAt: new Date(), deletedAt: new Date() },
+      ),
     );
-    return Promise.resolve(true);
   }
 }

@@ -37,15 +37,15 @@ export class StudentUseCase {
     return this.studentRepository.update(student);
   }
 
-  public remove(uuid: string): void {
-    this.studentRepository.delete(uuid);
+  public remove(uuid: string): Promise<StudentEntity | null> {
+    return this.studentRepository.delete(uuid);
   }
 
-  public activate(uuid: string): Promise<boolean | null> {
+  public activate(uuid: string): Promise<StudentEntity | null> {
     return this.studentRepository.enable(uuid);
   }
 
-  public deactivate(uuid: string): Promise<boolean | null> {
+  public deactivate(uuid: string): Promise<StudentEntity | null> {
     return this.studentRepository.disable(uuid);
   }
 }

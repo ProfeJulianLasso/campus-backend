@@ -1,13 +1,7 @@
-import { ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import { Prop } from '@nestjs/mongoose';
 
 export abstract class BaseEntitySchema {
-  @Prop({
-    default: new ObjectId(),
-  })
-  readonly _id: ObjectId;
-
   @Prop({
     required: [true, 'ID is required'],
     unique: true,
@@ -23,12 +17,12 @@ export abstract class BaseEntitySchema {
         `"${props.value}" does not have the structure of a UUID v4`,
     },
   })
-  readonly uuid: string;
+  readonly uuid: string = uuidv4();
 
   @Prop({
     default: new Date(),
   })
-  readonly createdAt: Date;
+  readonly createdAt: Date = new Date();
 
   @Prop()
   updatedAt: Date;

@@ -16,7 +16,7 @@ import { Student, StudentSchema } from './models/mongo/student.schema';
 import { StudentService } from './services/mongo/student.service';
 
 // Controllers
-import { StudentsController } from './packages/students/students.controller';
+import { StudentController } from './packages/student/student.controller';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { StudentsController } from './packages/students/students.controller';
       },
     ]),
   ],
-  controllers: [StudentsController],
+  controllers: [StudentController],
   providers: [StudentService],
 })
 export class AppModule {}

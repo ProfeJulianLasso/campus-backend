@@ -4,7 +4,7 @@ import { StudentEntity } from '../domain/entities/student.entity';
 import { DomainEventHandler } from 'src/contexts/domain-events.handler';
 import { StudentRepository } from '../domain/repositories/student.repository';
 
-export class StudentController {
+export class StudentGateway {
   private readonly studentUseCase: StudentUseCase;
   private readonly domainEvents: DomainEventHandler;
 
@@ -44,6 +44,56 @@ export class StudentController {
     this.domainEvents.EventEmitter.emit(
       DomainEvents.Students_EmailFound,
       student,
+    );
+  }
+
+  async register(student: StudentEntity): Promise<void> {
+    try {
+      const newStudent = await this.studentUseCase.register(student);
+      this.domainEvents.EventEmitter.emit(
+        DomainEvents.Student_Registered,
+        newStudent,
+      );
+    } catch (error) {
+      console.error(error.code);
+      console.error(error.message);
+    }
+  }
+
+  async modify(uuid: string, student: StudentEntity): Promise<void> {
+    try {
+      const updatedStudent = await this.studentUseCase.modify(uuid, student);
+      this.domainEvents.EventEmitter.emit(
+        DomainEvents.Student_Modified,
+        updatedStudent,
+      );
+    } catch (error) {
+      console.error(error.code);
+      console.error(error.message);
+    }
+  }
+
+  async activate(uuid: string): Promise<void> {
+    const activationStatus = await this.studentUseCase.activate(uuid);
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Student_Activated,
+      activationStatus,
+    );
+  }
+
+  async deactivate(uuid: string): Promise<void> {
+    const activationStatus = await this.studentUseCase.deactivate(uuid);
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Student_Deactivated,
+      activationStatus,
+    );
+  }
+
+  async remove(uuid: string): Promise<void> {
+    const deletedStatus = await this.studentUseCase.remove(uuid);
+    this.domainEvents.EventEmitter.emit(
+      DomainEvents.Student_Deleted,
+      deletedStatus,
     );
   }
 }
