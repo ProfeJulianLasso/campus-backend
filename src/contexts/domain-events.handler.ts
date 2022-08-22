@@ -4,8 +4,7 @@ import { DomainEvents } from './domain-events.enum';
 
 // Entities
 import { StudentEntity } from './students/domain/entities/student.entity';
-
-// Controllers
+import { StudentRepository } from './students/domain/repositories/student.repository';
 import { StudentGateway } from './students/infrastructure/student.gateway';
 
 export class DomainEventHandler {
@@ -37,7 +36,8 @@ export class DomainEventHandler {
     this.eventEmitter.emit(domainEvent, data);
   }
 
-  public loadContextStudents(gateway: StudentGateway): void {
+  public loadContextStudents(service: StudentRepository<StudentEntity>): void {
+    const gateway = new StudentGateway(service);
     if (!this.statusLoadContextStudents) {
       this.command(DomainEvents.Students_GetAllStudents, () => {
         gateway.getAllStudents();

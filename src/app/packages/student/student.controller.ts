@@ -25,17 +25,13 @@ import { Student } from '../../models/mongo/student.schema';
 // Services
 import { StudentService } from '../../services/mongo/student.service';
 
-// Gateway
-import { StudentGateway } from '../../../contexts/students/infrastructure/student.gateway';
-
 @Controller('student')
 export class StudentController {
   private readonly domainEvents: DomainEventHandler;
 
   constructor(private readonly studentService: StudentService) {
-    const studentGateway = new StudentGateway(this.studentService);
     this.domainEvents = DomainEventHandler.Instance;
-    this.domainEvents.loadContextStudents(studentGateway);
+    this.domainEvents.loadContextStudents(this.studentService);
   }
 
   @Get()
