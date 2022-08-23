@@ -1,4 +1,5 @@
 // Libraries
+import { v4 as uuid } from 'uuid';
 import { EventEmitter } from 'events';
 import { DomainEventsType } from '../contexts/domain-events.enum';
 
@@ -14,8 +15,13 @@ import { StudentsEvents } from './students/infrastructure/students.events';
 export class DomainEventHandler {
   private eventEmitter: EventEmitter;
   private static instance: DomainEventHandler;
+  private pattern: RegExp;
+  private eventsStack: Array<string>;
 
   private constructor() {
+    this.pattern =
+      /([0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12})$/i;
+    this.eventsStack = new Array<string>();
     this.eventEmitter = new EventEmitter();
   }
 
@@ -30,16 +36,45 @@ export class DomainEventHandler {
     return this.eventEmitter;
   }
 
-  public command(command: DomainEventsType, callback: any): void {
-    this.eventEmitter.on(command, callback);
+  public command(
+    domainEvent: DomainEventsType | string,
+    callback: any,
+  ): string | void {
+    const info = this.createTimestamp(domainEvent) ?? domainEvent;
+    if (typeof info === 'string') this.eventEmitter.on(domainEvent, callback);
+    else {
+      this.eventEmitter.on(`${domainEvent}.${info.timestamp}`, callback);
+      return info.timestamp;
+    }
   }
 
-  public apply(domainEvent: DomainEventsType, data?: any): void {
-    this.eventEmitter.emit(domainEvent, data);
+  public apply(
+    domainEvent: DomainEventsType | string,
+    data?: any,
+  ): string | void {
+    const info = this.createTimestamp(domainEvent) ?? domainEvent;
+    if (typeof info === 'string') this.eventEmitter.emit(domainEvent, data);
+    else {
+      this.eventEmitter.emit(`${domainEvent}.${info.timestamp}`, data);
+      return info.timestamp;
+    }
   }
 
   public loadContextStudents(service: StudentRepository<StudentEntity>): void {
     const studentsEvents = new StudentsEvents(service);
     studentsEvents.load(DomainEventHandler.Instance);
+  }
+
+  private createTimestamp(seed: string): { timestamp: string } | undefined {
+    const possibleTimestamp = seed.match(this.pattern);
+    if (
+      possibleTimestamp &&
+      this.eventsStack.indexOf(possibleTimestamp[0]) !== -1
+    ) {
+      return undefined;
+    }
+    const timestamp = uuid();
+    this.eventsStack.push(timestamp);
+    return { timestamp };
   }
 }
