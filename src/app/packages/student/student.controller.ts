@@ -31,13 +31,13 @@ export class StudentController {
 
   constructor(private readonly studentService: StudentService) {
     this.domainEvents = DomainEventHandler.Instance;
-    this.domainEvents.loadContextStudents(this.studentService);
+    this.domainEvents.ServiceForStudentsContext = this.studentService;
   }
 
   @Get()
   getAll(@Res() response: Response): void {
     // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
+    const event = this.domainEvents.command(
       DomainEvents.Students_AllTheObtainedStudents,
       (students: Student[]) => {
         if (!response.headersSent)
@@ -46,7 +46,7 @@ export class StudentController {
     );
 
     // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Students_GetAllStudents);
+    if (typeof event === 'object') this.domainEvents.apply(event.channel);
   }
 
   @Get(':uuid')

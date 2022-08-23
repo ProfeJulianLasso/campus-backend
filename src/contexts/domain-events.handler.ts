@@ -11,12 +11,14 @@ import { StudentRepository } from './students/domain/repositories/student.reposi
 
 // Events
 import { StudentsEvents } from './students/infrastructure/students.events';
+import { ChannelInterface } from './channel.interface';
 
 export class DomainEventHandler {
   private eventEmitter: EventEmitter;
   private static instance: DomainEventHandler;
   private pattern: RegExp;
   private eventsStack: Array<string>;
+  private serviceForStudentsContext: StudentRepository<StudentEntity>;
 
   private constructor() {
     this.pattern =
@@ -36,27 +38,31 @@ export class DomainEventHandler {
     return this.eventEmitter;
   }
 
+  set ServiceForStudentsContext(service: StudentRepository<StudentEntity>) {
+    this.serviceForStudentsContext = service;
+  }
+
   public command(
     domainEvent: DomainEventsType | string,
     callback: any,
-  ): string | void {
+  ): ChannelInterface | void {
     const info = this.createTimestamp(domainEvent) ?? domainEvent;
     if (typeof info === 'string') this.eventEmitter.on(domainEvent, callback);
     else {
-      this.eventEmitter.on(`${domainEvent}.${info.timestamp}`, callback);
-      return info.timestamp;
+      this.eventEmitter.on(info.channel, callback);
+      return info;
     }
   }
 
   public apply(
     domainEvent: DomainEventsType | string,
     data?: any,
-  ): string | void {
+  ): ChannelInterface | void {
     const info = this.createTimestamp(domainEvent) ?? domainEvent;
     if (typeof info === 'string') this.eventEmitter.emit(domainEvent, data);
     else {
-      this.eventEmitter.emit(`${domainEvent}.${info.timestamp}`, data);
-      return info.timestamp;
+      this.eventEmitter.emit(info.channel, data);
+      return info;
     }
   }
 
@@ -65,7 +71,7 @@ export class DomainEventHandler {
     studentsEvents.load(DomainEventHandler.Instance);
   }
 
-  private createTimestamp(seed: string): { timestamp: string } | undefined {
+  public createTimestamp(seed: string): ChannelInterface | undefined {
     const possibleTimestamp = seed.match(this.pattern);
     if (
       possibleTimestamp &&
@@ -75,6 +81,6 @@ export class DomainEventHandler {
     }
     const timestamp = uuid();
     this.eventsStack.push(timestamp);
-    return { timestamp };
+    return { channel: `${seed}.${timestamp}`, timestamp };
   }
 }
