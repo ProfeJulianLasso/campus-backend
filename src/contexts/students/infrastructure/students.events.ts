@@ -1,8 +1,8 @@
+import { StudentGateway } from './student.gateway';
+import { StudentEntity } from '../domain/entities/student.entity';
 import { DomainEvents } from '../../../contexts/domain-events.enum';
 import { DomainEventHandler } from '../../../contexts/domain-events.handler';
-import { StudentEntity } from '../domain/entities/student.entity';
 import { StudentRepository } from '../domain/repositories/student.repository';
-import { StudentGateway } from './student.gateway';
 
 export class StudentsEvents {
   private readonly gateway: StudentGateway;
