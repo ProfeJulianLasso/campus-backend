@@ -24,6 +24,7 @@ import { Student } from '../../models/mongo/student.schema';
 
 // Services
 import { StudentService } from '../../services/mongo/student.service';
+import { LassoIO } from 'src/lasso/lasso-io.class';
 
 @Controller('student')
 export class StudentController {
@@ -31,13 +32,20 @@ export class StudentController {
 
   constructor(private readonly studentService: StudentService) {
     this.domainEvents = DomainEventHandler.Instance;
-    this.domainEvents.ServiceForStudentsContext = this.studentService;
+    this.domainEvents.loadContextStudents(this.studentService);
   }
 
   @Get()
   getAll(@Res() response: Response): void {
+    LassoIO.Instance.add({
+      channel: 'hola1',
+      apply: {},
+      callback: () => console.log('done'),
+    });
+    console.log(LassoIO.Instance.eventsStack);
+
     // Escuchar la respuesta de la solicitud
-    const event = this.domainEvents.command(
+    this.domainEvents.command(
       DomainEvents.Students_AllTheObtainedStudents,
       (students: Student[]) => {
         if (!response.headersSent)
@@ -46,11 +54,18 @@ export class StudentController {
     );
 
     // Crear solicitud
-    if (typeof event === 'object') this.domainEvents.apply(event.channel);
+    this.domainEvents.apply(DomainEvents.Students_GetAllStudents);
   }
 
   @Get(':uuid')
   findByUUID(@Param('uuid') uuid: string, @Res() response: Response): void {
+    LassoIO.Instance.add({
+      channel: 'hola2',
+      apply: {},
+      callback: () => console.log('done'),
+    });
+    console.log(LassoIO.Instance.eventsStack);
+
     // Escuchar la respuesta de la solicitud
     this.domainEvents.command(
       DomainEvents.Students_UUIDFound,
