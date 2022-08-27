@@ -13,7 +13,7 @@ import { BaseEntitySchema } from '../../../shared/infrastructure/models/mongo/ba
 
 export type StudentDocument = Student & Document;
 
-@Schema({ collection: 'students' })
+@Schema({ collection: 'students', versionKey: false })
 export class Student extends BaseEntitySchema implements StudentEntity {
   @Prop({
     index: true,

@@ -1,5 +1,7 @@
 // Libraries
 import { Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { EventsIO } from '../../../contexts/events-io.handler';
 import {
   Body,
   Controller,
@@ -14,68 +16,72 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { DomainEventHandler } from '../../../contexts/domain-events.handler';
 
 // Enums
-import { DomainEvents } from '../../../contexts/domain-events.enum';
+import { EventsIOEnum } from '../../../contexts/events-io.enum';
 
 // Schemas
 import { Student } from '../../models/mongo/student.schema';
 
 // Services
 import { StudentService } from '../../services/mongo/student.service';
-import { LassoIO } from 'src/lasso/lasso-io.class';
 
 @Controller('student')
 export class StudentController {
-  private readonly domainEvents: DomainEventHandler;
+  private readonly EventsIO: EventsIO;
 
   constructor(private readonly studentService: StudentService) {
-    this.domainEvents = DomainEventHandler.Instance;
-    this.domainEvents.loadContextStudents(this.studentService);
+    this.EventsIO = EventsIO.Instance;
+    this.EventsIO.loadGateway('students', this.studentService);
   }
 
   @Get()
   getAll(@Res() response: Response): void {
-    LassoIO.Instance.add({
-      channel: 'hola1',
-      apply: {},
-      callback: () => console.log('done'),
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
+
+    const success = (students: Student[]) => {
+      response.status(HttpStatus.OK).json(students);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_GetAllStudents, {
+      channelSuccess,
+      channelError,
     });
-    console.log(LassoIO.Instance.eventsStack);
-
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Students_AllTheObtainedStudents,
-      (students: Student[]) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(students);
-      },
-    );
-
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Students_GetAllStudents);
   }
 
   @Get(':uuid')
   findByUUID(@Param('uuid') uuid: string, @Res() response: Response): void {
-    LassoIO.Instance.add({
-      channel: 'hola2',
-      apply: {},
-      callback: () => console.log('done'),
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
+
+    const success = (student: Student | null) => {
+      response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByUUID, {
+      data: { uuid },
+      channelSuccess,
+      channelError,
     });
-    console.log(LassoIO.Instance.eventsStack);
-
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Students_UUIDFound,
-      (student: Student | null) => {
-        if (!response.headersSent) response.status(HttpStatus.OK).json(student);
-      },
-    );
-
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Students_FindByUUID, { uuid });
   }
 
   @Get('fullname/:fullname')
@@ -83,48 +89,81 @@ export class StudentController {
     @Param('fullname') fullname: string,
     @Res() response: Response,
   ): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Students_FullNameFound,
-      (students: Student[]) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(students);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Students_FindByFullName, { fullname });
+    const success = (students: Student[]) => {
+      response.status(HttpStatus.OK).json(students);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByFullName, {
+      data: { fullname },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Get('email/:email')
   findByEmail(@Param('email') email: string, @Res() response: Response): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.EventEmitter.on(
-      DomainEvents.Students_EmailFound,
-      (student: Student) => {
-        if (!response.headersSent) response.status(HttpStatus.OK).json(student);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Students_FindByEmail, { email });
+    const success = (student: Student | null) => {
+      response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByEmail, {
+      data: { email },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   register(@Res() response: Response, @Body() student: Student): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Student_Registered,
-      (newStudent: Student) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.CREATED).json(newStudent);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    // this.domainEvents.EventEmitter.emit(DomainEvents.Student_Register, student);
-    this.domainEvents.apply(DomainEvents.Student_Register, { student });
+    const success = (newStudent: Student | null) => {
+      // if (!response.headersSent)
+      response.status(HttpStatus.CREATED).json(newStudent);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Register, {
+      data: { student },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Put(':uuid')
@@ -133,61 +172,105 @@ export class StudentController {
     @Param('uuid') uuid: string,
     @Body() student: Student,
   ): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Student_Modified,
-      (updatedStudent: Student | null) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(updatedStudent);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Student_Modify, { uuid, student });
+    const success = (updatedStudent: Student | null) => {
+      response.status(HttpStatus.OK).json(updatedStudent);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Modify, {
+      data: { uuid, student },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Patch('activate/:uuid')
   activate(@Res() response: Response, @Param('uuid') uuid: string): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Student_Activated,
-      (activationStatus: Student | null) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(activationStatus);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Student_Activate, { uuid });
+    const success = (student: Student | null) => {
+      response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Activate, {
+      data: { uuid },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Patch('deactivate/:uuid')
   deactivate(@Res() response: Response, @Param('uuid') uuid: string): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Student_Deactivated,
-      (activationStatus: Student | null) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(activationStatus);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Student_Deactivate, { uuid });
+    const success = (student: Student | null) => {
+      response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Deactivate, {
+      data: { uuid },
+      channelSuccess,
+      channelError,
+    });
   }
 
   @Delete(':uuid')
   remove(@Res() response: Response, @Param('uuid') uuid: string): void {
-    // Escuchar la respuesta de la solicitud
-    this.domainEvents.command(
-      DomainEvents.Student_Deleted,
-      (deletedStatus: Student | null) => {
-        if (!response.headersSent)
-          response.status(HttpStatus.OK).json(deletedStatus);
-      },
-    );
+    const channelSuccess = uuidv4();
+    const channelError = `${channelSuccess}.error`;
 
-    // Crear solicitud
-    this.domainEvents.apply(DomainEvents.Student_Delete, { uuid });
+    const success = (student: Student | null) => {
+      response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelSuccess, success);
+
+    const fail = (error: any) => {
+      response.status(HttpStatus.BAD_REQUEST).json({ error });
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
+      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+    };
+    this.EventsIO.eventEmitter.on(channelError, fail);
+
+    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Delete, {
+      data: { uuid },
+      channelSuccess,
+      channelError,
+    });
   }
 }

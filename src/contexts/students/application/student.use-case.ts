@@ -8,7 +8,7 @@ export class StudentUseCase {
   ) {}
 
   public async listAll(): Promise<StudentEntity[]> {
-    return await this.studentRepository.listAll();
+    return this.studentRepository.listAll();
   }
 
   public findByUuid(uuid: string): Promise<StudentEntity | null> {

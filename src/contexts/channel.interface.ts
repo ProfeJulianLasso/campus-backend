@@ -1,4 +1,5 @@
-export interface ChannelInterface {
-  channel: string;
-  timestamp: string;
+export interface ChannelInterface<T> {
+  channelSuccess: string;
+  channelError: string;
+  data: T;
 }
