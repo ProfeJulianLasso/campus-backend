@@ -1,6 +1,6 @@
 // Libraries
 import { readdirSync } from 'fs';
-import { EventsIO } from '../../../contexts/events-io.handler';
+import { EventsIO } from '../../../events-io.handler';
 
 export abstract class GatewayBaseGateway {
   abstract loadEvents(events: EventsIO): void;

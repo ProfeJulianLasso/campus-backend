@@ -3,13 +3,13 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // Enums
-import { State } from '../../../shared/utilities/enums/state.enum';
+import { State } from '../../../contexts/shared/utilities/enums/state.enum';
 
 // Entities
 import { StudentEntity } from '../../../contexts/students/domain/entities/student.entity';
 
 // Schemas
-import { BaseEntitySchema } from '../../../shared/infrastructure/models/mongo/base-entity.schema';
+import { BaseEntitySchema } from '../../../contexts/shared/infrastructure/models/mongo/base-entity.schema';
 
 export type StudentDocument = Student & Document;
 

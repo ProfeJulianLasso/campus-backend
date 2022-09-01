@@ -6,7 +6,7 @@ import { EventsIOEnum } from '../../../events-io.enum';
 
 // Interfaces
 import { ChannelInterface } from '../../../channel.interface';
-import { EventBaseEvent } from '../../../../shared/infrastructure/events/event-base.event';
+import { EventBaseEvent } from '../../../shared/infrastructure/events/event-base.event';
 
 // Entities
 import { StudentEntity } from '../../domain/entities/student.entity';

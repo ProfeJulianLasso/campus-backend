@@ -2,7 +2,7 @@
 import { EventsIO } from '../../../events-io.handler';
 
 // Interfaces
-import { GatewayBaseGateway } from '../../../../shared/infrastructure/gateways/gateway-base.gateway';
+import { GatewayBaseGateway } from '../../../shared/infrastructure/gateways/gateway-base.gateway';
 
 // Entities
 import { StudentEntity } from '../../domain/entities/student.entity';

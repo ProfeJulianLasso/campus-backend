@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 // Enums
-import { State } from '../../../shared/utilities/enums/state.enum';
+import { State } from '../../../contexts/shared/utilities/enums/state.enum';
 
 // Repositories
 import { StudentRepository } from '../../../contexts/students/domain/repositories/student.repository';

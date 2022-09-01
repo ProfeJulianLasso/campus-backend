@@ -1,10 +1,8 @@
 // Entities
-import { BaseEntity } from '../../../../shared/domain/entities/base.entity';
+import { CourseEntity } from './course.entity';
+import { PersonEntity } from '../../../shared/domain/entities/person.entity';
 
-export interface StudentEntity extends BaseEntity {
-  name: string;
-  lastName: string;
-  email: string;
-  photo?: string | null;
-  status?: boolean;
+export interface StudentEntity {
+  personalData: PersonEntity;
+  courses: CourseEntity[];
 }
