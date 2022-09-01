@@ -1,5 +1,8 @@
+// Libraries
 import { v4 as uuidv4 } from 'uuid';
-import { BaseEntity } from 'src/shared/domain/entities/base.entity';
+
+// Entities
+import { BaseEntity } from '../../../shared/domain/entities/base.entity';
 
 export class BaseDto implements BaseEntity {
   uuid: string;

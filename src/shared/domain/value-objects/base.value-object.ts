@@ -1,4 +1,7 @@
+// Libraries
 import { v4 as uuidv4 } from 'uuid';
+
+// Entities
 import { BaseEntity } from '../entities/base.entity';
 
 export class BaseValueObject implements BaseEntity {
