@@ -1,9 +1,12 @@
-import { BaseRepository } from '../../../shared/domain/repositories/base.repository';
-
-export interface StudentRepository<T> extends BaseRepository<T> {
-  findByEmail(email: string): Promise<T | null>;
-  findByName(name: string): Promise<T[]>;
-  findByLastName(lastName: string): Promise<T[]>;
-  enable(uuid: string): Promise<T | null>;
-  disable(uuid: string): Promise<T | null>;
+export interface StudentRepository<T> {
+  listAllStudents(): Promise<T[]>;
+  saveStudent(entity: T): Promise<T>;
+  updateStudent(entity: T): Promise<T | null>;
+  deleteStudent(uuid: string): Promise<T | null>;
+  enableStudent(uuid: string): Promise<T | null>;
+  disableStudent(uuid: string): Promise<T | null>;
+  findStudentByName(name: string): Promise<T[]>;
+  findStudentByUuid(uuid: string): Promise<T | null>;
+  findStudentByEmail(email: string): Promise<T | null>;
+  findStudentByLastName(lastName: string): Promise<T[]>;
 }
