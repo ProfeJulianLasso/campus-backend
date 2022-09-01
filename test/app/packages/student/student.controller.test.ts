@@ -4,7 +4,6 @@ import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-import { createResponse } from 'node-mocks-http';
 import { Test, TestingModule } from '@nestjs/testing';
 
 // App

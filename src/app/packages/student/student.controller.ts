@@ -1,7 +1,5 @@
 // Libraries
 import { Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { EventsIO } from '../../../contexts/events-io.handler';
 import {
   Body,
   Controller,
@@ -25,260 +23,146 @@ import { Student } from '../../models/mongo/student.schema';
 
 // Services
 import { StudentService } from '../../services/mongo/student.service';
+import { BaseController } from '../shared/controllers/base.controller';
 
 @Controller('student')
-export class StudentController {
-  private readonly EventsIO: EventsIO;
-
+export class StudentController extends BaseController<Student> {
   constructor(private readonly studentService: StudentService) {
-    this.EventsIO = EventsIO.Instance;
-    this.EventsIO.loadGateway('students', this.studentService);
+    super('students', studentService);
   }
 
   @Get()
-  async getAll(): Promise<Student[] | any> {
-    const data = await new Promise<Student[] | any>((resolve, reject) => {
-      const channelSuccess = uuidv4();
-      const channelError = `${channelSuccess}.error`;
-
-      const success = (students: Student[]) => {
-        // response.status(HttpStatus.OK).json(students);
-        this.EventsIO.eventEmitter.removeListener(channelError, fail);
-        this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-        resolve(students);
-      };
-      this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-      const fail = (error: any) => {
-        // response.status(HttpStatus.BAD_REQUEST).json({ error });
-        this.EventsIO.eventEmitter.removeListener(channelError, fail);
-        this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-        reject(error);
-      };
-      this.EventsIO.eventEmitter.on(channelError, fail);
-
-      this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_GetAllStudents, {
-        channelSuccess,
-        channelError,
-      });
+  async getAll(
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<Student[] | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_GetAllStudents,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
-    return data;
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Get(':uuid')
-  findByUUID(@Param('uuid') uuid: string, @Res() response: Response): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (student: Student | null) => {
-      response.status(HttpStatus.OK).json(student);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByUUID, {
+  async findByUUID(
+    @Param('uuid') uuid: string,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_FindByUUID,
       data: { uuid },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Get('fullname/:fullname')
-  findByFullname(
+  async findByFullname(
     @Param('fullname') fullname: string,
-    @Res() response: Response,
-  ): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (students: Student[]) => {
-      response.status(HttpStatus.OK).json(students);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByFullName, {
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<Student[] | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_FindByFullName,
       data: { fullname },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Get('email/:email')
-  findByEmail(@Param('email') email: string, @Res() response: Response): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (student: Student | null) => {
-      response.status(HttpStatus.OK).json(student);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_FindByEmail, {
+  async findByEmail(
+    @Param('email') email: string,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_FindByEmail,
       data: { email },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
-  register(@Res() response: Response, @Body() student: Student): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (newStudent: Student | null) => {
-      // if (!response.headersSent)
-      response.status(HttpStatus.CREATED).json(newStudent);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Register, {
+  async register(
+    @Res({ passthrough: true }) response: Response,
+    @Body() student: Student,
+  ): Promise<Student | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_Register,
       data: { student },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.CREATED,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Put(':uuid')
-  modify(
-    @Res() response: Response,
+  async modify(
+    @Res({ passthrough: true }) response: Response,
     @Param('uuid') uuid: string,
     @Body() student: Student,
-  ): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (updatedStudent: Student | null) => {
-      response.status(HttpStatus.OK).json(updatedStudent);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Modify, {
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_Modify,
       data: { uuid, student },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Patch('activate/:uuid')
-  activate(@Res() response: Response, @Param('uuid') uuid: string): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (student: Student | null) => {
-      response.status(HttpStatus.OK).json(student);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Activate, {
+  async activate(
+    @Res({ passthrough: true }) response: Response,
+    @Param('uuid') uuid: string,
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_Activate,
       data: { uuid },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Patch('deactivate/:uuid')
-  deactivate(@Res() response: Response, @Param('uuid') uuid: string): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (student: Student | null) => {
-      response.status(HttpStatus.OK).json(student);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Deactivate, {
+  async deactivate(
+    @Res({ passthrough: true }) response: Response,
+    @Param('uuid') uuid: string,
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_Deactivate,
       data: { uuid },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 
   @Delete(':uuid')
-  remove(@Res() response: Response, @Param('uuid') uuid: string): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
-
-    const success = (student: Student | null) => {
-      response.status(HttpStatus.OK).json(student);
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
-
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
-
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_Delete, {
+  async remove(
+    @Res({ passthrough: true }) response: Response,
+    @Param('uuid') uuid: string,
+  ): Promise<Student | null | unknown> {
+    const answer = await this.executeEvent<Student>({
+      event: EventsIOEnum.Students_Delete,
       data: { uuid },
-      channelSuccess,
-      channelError,
+      statusSuccess: HttpStatus.OK,
+      statusError: HttpStatus.BAD_REQUEST,
     });
+    response.status(answer.status);
+    return answer.data;
   }
 }
