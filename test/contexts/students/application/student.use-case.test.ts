@@ -11,7 +11,7 @@ import {
 import { StudentService } from '../../../../src/app/services/mongo/student.service';
 import { StudentUseCase } from '../../../../src/contexts/students/application/student.use-case';
 
-mocha.describe('Students UseCases', () => {
+mocha.describe('StudentUseCases', () => {
   let studentUseCase: StudentUseCase;
   let studentService: StudentService;
   let studentModel: Model<StudentDocument>;

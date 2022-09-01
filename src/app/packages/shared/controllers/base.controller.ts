@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus } from '@nestjs/common';
-import { EventsIO } from 'src/contexts/events-io.handler';
-import { BaseRepository } from 'src/shared/domain/repositories/base.repository';
+import { EventsIO } from '../../../../contexts/events-io.handler';
+import { BaseRepository } from '../../../../shared/domain/repositories/base.repository';
 
 export abstract class BaseController<T> {
   protected readonly EventsIO: EventsIO;

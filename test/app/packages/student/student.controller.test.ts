@@ -4,6 +4,7 @@ import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
+import { createResponse } from 'node-mocks-http';
 import { Test, TestingModule } from '@nestjs/testing';
 
 // App
@@ -64,17 +65,17 @@ mocha.describe('StudentController', () => {
       expected.push(student1);
       expected.push(student2);
 
-      // const mock = sinon.mock(studentModel);
-      // mock.expects('find').resolves(mockedUserList);
+      const mock = sinon.mock(studentModel);
+      mock.expects('find').resolves(mockedUserList);
+
+      const nodeResponse = createResponse();
 
       // act
-      const data = await controller.getAll();
-      console.log(data);
+      const actual = await controller.getAll(nodeResponse);
 
       // assert
-      // mock.verify();
-      console.log(JSON.stringify(data));
-      assert.equal(data.toString(), expected.toString());
+      mock.verify();
+      assert.equal((actual as []).toString(), expected.toString());
     });
   });
 });
