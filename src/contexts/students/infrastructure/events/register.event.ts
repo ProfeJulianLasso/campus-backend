@@ -1,9 +1,18 @@
+// Libraries
 import { EventsIO } from '../../../events-io.handler';
+
+// Enums
 import { EventsIOEnum } from '../../../events-io.enum';
+
+// Interfaces
 import { ChannelInterface } from '../../../channel.interface';
-import { StudentUseCase } from '../../application/student.use-case';
 import { EventBaseEvent } from '../../../../shared/infrastructure/events/event-base.event';
+
+// Entities
 import { StudentEntity } from '../../domain/entities/student.entity';
+
+// Use Cases
+import { StudentUseCase } from '../../application/student.use-case';
 
 export class RegisterEvent implements EventBaseEvent {
   loadEvent(events: EventsIO, studentUseCase: StudentUseCase): void {

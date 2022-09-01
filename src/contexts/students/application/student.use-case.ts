@@ -1,6 +1,11 @@
-import { StudentEntity } from '../domain/entities/student.entity';
-import { StudentRepository } from '../domain/repositories/student.repository';
+// Libraries
 import { merge } from 'lodash';
+
+// Entities
+import { StudentEntity } from '../domain/entities/student.entity';
+
+// Repositories
+import { StudentRepository } from '../domain/repositories/student.repository';
 
 export class StudentUseCase {
   constructor(

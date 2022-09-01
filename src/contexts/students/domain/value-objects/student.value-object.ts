@@ -1,6 +1,11 @@
+// Enums
+import { State } from '../../../../shared/utilities/enums/state.enum';
+
+// Entities
 import { StudentEntity } from '../entities/student.entity';
-import { State } from 'src/shared/utilities/enums/state.enum';
-import { BaseValueObject } from 'src/shared/domain/value-objects/base.value-object';
+
+// Object Values
+import { BaseValueObject } from '../../../../shared/domain/value-objects/base.value-object';
 
 export class StudentValueObject
   extends BaseValueObject
