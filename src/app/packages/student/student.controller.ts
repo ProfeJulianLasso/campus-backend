@@ -36,27 +36,33 @@ export class StudentController {
   }
 
   @Get()
-  getAll(@Res() response: Response): void {
-    const channelSuccess = uuidv4();
-    const channelError = `${channelSuccess}.error`;
+  async getAll(): Promise<Student[] | any> {
+    const data = await new Promise<Student[] | any>((resolve, reject) => {
+      const channelSuccess = uuidv4();
+      const channelError = `${channelSuccess}.error`;
 
-    const success = (students: Student[]) => {
-      response.status(HttpStatus.OK).json(students);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelSuccess, success);
+      const success = (students: Student[]) => {
+        // response.status(HttpStatus.OK).json(students);
+        this.EventsIO.eventEmitter.removeListener(channelError, fail);
+        this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+        resolve(students);
+      };
+      this.EventsIO.eventEmitter.on(channelSuccess, success);
 
-    const fail = (error: any) => {
-      response.status(HttpStatus.BAD_REQUEST).json({ error });
-      this.EventsIO.eventEmitter.removeListener(channelError, fail);
-      this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
-    };
-    this.EventsIO.eventEmitter.on(channelError, fail);
+      const fail = (error: any) => {
+        // response.status(HttpStatus.BAD_REQUEST).json({ error });
+        this.EventsIO.eventEmitter.removeListener(channelError, fail);
+        this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
+        reject(error);
+      };
+      this.EventsIO.eventEmitter.on(channelError, fail);
 
-    this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_GetAllStudents, {
-      channelSuccess,
-      channelError,
+      this.EventsIO.eventEmitter.emit(EventsIOEnum.Students_GetAllStudents, {
+        channelSuccess,
+        channelError,
+      });
     });
+    return data;
   }
 
   @Get(':uuid')
@@ -66,6 +72,7 @@ export class StudentController {
 
     const success = (student: Student | null) => {
       response.status(HttpStatus.OK).json(student);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
       this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
     };
     this.EventsIO.eventEmitter.on(channelSuccess, success);
@@ -94,6 +101,7 @@ export class StudentController {
 
     const success = (students: Student[]) => {
       response.status(HttpStatus.OK).json(students);
+      this.EventsIO.eventEmitter.removeListener(channelError, fail);
       this.EventsIO.eventEmitter.removeListener(channelSuccess, success);
     };
     this.EventsIO.eventEmitter.on(channelSuccess, success);

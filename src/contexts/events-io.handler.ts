@@ -24,7 +24,8 @@ export class EventsIO {
   }
 
   public async loadGateway(context: string, service: any): Promise<void> {
-    const file = __dirname + `/${context}/infrastructure/${context}.gateway`;
+    const file =
+      __dirname + `/${context}/infrastructure/gateways/${context}.gateway`;
     const fileLoaded = await import(file);
     const nameClass = Object.keys(fileLoaded).at(0) ?? '';
     const gateway = new fileLoaded[nameClass](service);

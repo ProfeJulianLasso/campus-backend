@@ -6,9 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 // Database Configuration
 import { MongoConfigService } from '../database/mongo/mongo-config.service';
 
-// Environment
-import environment from '../environment/environment';
-
 // Schemas
 import { Student, StudentSchema } from './models/mongo/student.schema';
 
@@ -21,7 +18,8 @@ import { StudentController } from './packages/student/student.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [environment],
+      envFilePath: `${process.cwd()}/environment/.env.${process.env.NODE_ENV}`,
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       useClass: MongoConfigService,

@@ -1,23 +1,28 @@
+// Libraries
 import { assert } from 'chai';
 import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
+import { createResponse } from 'node-mocks-http';
 import { Test, TestingModule } from '@nestjs/testing';
+
+// App
+import { StudentService } from '../../../../src/app/services/mongo/student.service';
+import { StudentController } from '../../../../src/app/packages/student/student.controller';
 import {
   Student,
   StudentDocument,
 } from '../../../../src/app/models/mongo/student.schema';
-import { StudentService } from '../../../../src/app/services/mongo/student.service';
-import { StudentUseCase } from '../../../../src/contexts/students/application/student.use-case';
 
-mocha.describe('Students UseCases', () => {
-  let studentUseCase: StudentUseCase;
+mocha.describe('StudentController', () => {
+  let controller: StudentController;
   let studentService: StudentService;
   let studentModel: Model<StudentDocument>;
 
   mocha.before(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [StudentController],
       providers: [
         {
           provide: getModelToken(Student.name),
@@ -26,10 +31,13 @@ mocha.describe('Students UseCases', () => {
         StudentService,
       ],
     }).compile();
+    const app = module.createNestApplication();
     studentModel = module.get<Model<StudentDocument>>(
       getModelToken(Student.name),
     );
     studentService = module.get<StudentService>(StudentService);
+    controller = module.get<StudentController>(StudentController);
+    await app.init();
   });
 
   mocha.it('studentService should be defined', () => {
@@ -57,15 +65,16 @@ mocha.describe('Students UseCases', () => {
       expected.push(student1);
       expected.push(student2);
 
-      studentUseCase = new StudentUseCase(studentService);
-      const mock = sinon.mock(studentModel);
-      mock.expects('find').resolves(mockedUserList);
+      // const mock = sinon.mock(studentModel);
+      // mock.expects('find').resolves(mockedUserList);
 
       // act
-      const data = await studentUseCase.listAll();
+      const data = await controller.getAll();
+      console.log(data);
 
       // assert
-      mock.verify();
+      // mock.verify();
+      console.log(JSON.stringify(data));
       assert.equal(data.toString(), expected.toString());
     });
   });
