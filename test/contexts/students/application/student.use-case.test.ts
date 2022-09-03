@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 import { Model } from 'mongoose';
@@ -33,7 +33,7 @@ mocha.describe('StudentUseCases', () => {
   });
 
   mocha.it('studentService should be defined', () => {
-    assert.isDefined(studentService);
+    chai.assert.isDefined(studentService);
   });
 
   mocha.describe('List all students', () => {
@@ -66,7 +66,7 @@ mocha.describe('StudentUseCases', () => {
 
       // assert
       mock.verify();
-      assert.equal(data.toString(), expected.toString());
+      chai.assert.equal(data.toString(), expected.toString());
     });
   });
 });

@@ -1,5 +1,5 @@
 // Libraries
-import { assert } from 'chai';
+import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 import { Model } from 'mongoose';
