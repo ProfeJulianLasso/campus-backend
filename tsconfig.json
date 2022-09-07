@@ -1,34 +1,5 @@
 {
   "compilerOptions": {
-    // "paths": {
-    //   "@student/*": [
-    //     "src/contexts/students/*"
-    //   ],
-    //   "@teacher/*": [
-    //     "src/contexts/teachers/*"
-    //   ],
-    //   "@shared/*": [
-    //     "src/shared/*"
-    //   ],
-    //   "@mongo/*": [
-    //     "./src/database/mongo/*"
-    //   ],
-    //   "@postgresql/*": [
-    //     "src/database/postgresql/*"
-    //   ],
-    //   "@database/*": [
-    //     "./src/database/*"
-    //   ],
-    //   "@domain/*": [
-    //     "./src/contexts/*"
-    //   ],
-    //   "@environment/*": [
-    //     "./src/environment/*"
-    //   ],
-    //   "@campus/*": [
-    //     "./src/*"
-    //   ]
-    // },
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -46,5 +17,6 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "paths": {}
   }
 }
