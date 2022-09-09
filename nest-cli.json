@@ -1,21 +1,21 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/campus-backend/src",
+  "sourceRoot": "apps/backend/src",
   "monorepo": true,
-  "root": "apps/campus-backend",
+  "root": "apps/backend",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/campus-backend/tsconfig.app.json"
+    "tsConfigPath": "apps/backend/tsconfig.app.json"
   },
   "projects": {
-    "campus-backend": {
+    "campus": {
       "type": "application",
-      "root": "apps/campus-backend",
+      "root": "apps/backend",
       "entryFile": "main",
-      "sourceRoot": "apps/campus-backend/src",
+      "sourceRoot": "apps/backend/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/campus-backend/tsconfig.app.json"
+        "tsConfigPath": "apps/backend/tsconfig.app.json"
       }
     },
     "students": {

@@ -11,6 +11,5 @@ export class AppController {
       message: 'hola mundo',
       data: { nombre: 'Julian', apellido: 'Lasso' },
     });
-    // return 'hola';
   }
 }
