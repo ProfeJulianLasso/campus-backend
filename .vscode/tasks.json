@@ -4,13 +4,11 @@
     {
       "label": "start Contexts",
       "dependsOn": [
-        "npm: start-courses",
-        "npm: start-students"
+        "Courses",
+        "Students"
       ],
       "presentation": {
-        "echo": true,
         "reveal": "always",
-        "focus": false,
         "panel": "shared",
         "showReuseMessage": true,
         "clear": false,
@@ -27,6 +25,8 @@
       },
     },
     {
+      "label": "Courses",
+      "detail": "nest start courses",
       "type": "npm",
       "script": "start-courses",
       "isBackground": true,
@@ -39,11 +39,11 @@
           "beginsPattern": "webpack",
           "endsPattern": "successfully"
         }
-      },
-      "label": "npm: start-courses",
-      "detail": "nest start courses"
+      }
     },
     {
+      "label": "Students",
+      "detail": "nest start students",
       "type": "npm",
       "script": "start-students",
       "isBackground": true,
@@ -56,9 +56,7 @@
           "beginsPattern": "webpack",
           "endsPattern": "successfully"
         }
-      },
-      "label": "npm: start-students",
-      "detail": "nest start students"
+      }
     }
   ],
   "inputs": [
