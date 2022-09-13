@@ -31,17 +31,29 @@ export class StudentController extends BaseController<Student> {
     super('students', studentService);
   }
 
+  // @Get()
+  // async getAll(
+  //   @Res({ passthrough: true }) response: Response,
+  // ): Promise<Student[] | unknown> {
+  //   const answer = await this.executeEvent<Student>({
+  //     event: EventsIOEnum.Students_GetAllStudents,
+  //     statusSuccess: HttpStatus.OK,
+  //     statusError: HttpStatus.BAD_REQUEST,
+  //   });
+  //   response.status(answer.status);
+  //   return answer.data;
+  // }
+
   @Get()
-  async getAll(
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<Student[] | unknown> {
+  async getAll(@Res() response: Response): Promise<void> {
     const answer = await this.executeEvent<Student>({
       event: EventsIOEnum.Students_GetAllStudents,
       statusSuccess: HttpStatus.OK,
       statusError: HttpStatus.BAD_REQUEST,
     });
-    response.status(answer.status);
-    return answer.data;
+    // response.status(answer.status);
+    // return answer.data;
+    response.status(answer.status).json(answer.data);
   }
 
   @Get(':uuid')

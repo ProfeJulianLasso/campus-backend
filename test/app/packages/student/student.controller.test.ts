@@ -41,12 +41,12 @@ mocha.describe('StudentController', () => {
   });
 
   mocha.it('studentService should be defined', () => {
-    assert.isDefined(studentService);
+    chai.assert.isDefined(studentService);
   });
 
   mocha.describe('List all students', () => {
     mocha.it('should return an array of students', async () => {
-      // arrange
+      // Arrange
       const student1 = new Student();
       student1.name = 'John';
       student1.lastName = 'Cage';
@@ -70,12 +70,14 @@ mocha.describe('StudentController', () => {
 
       const nodeResponse = createResponse();
 
-      // act
-      const actual = await controller.getAll(nodeResponse);
+      // Act
+      // const actual = await controller.getAll(nodeResponse);
+      await controller.getAll(nodeResponse);
 
-      // assert
+      // Assert
       mock.verify();
-      assert.equal((actual as []).toString(), expected.toString());
+      chai.assert.equal(nodeResponse._getData(), JSON.stringify(expected));
+      // chai.assert.equal((actual as []).toString(), expected.toString());
     });
   });
 });
