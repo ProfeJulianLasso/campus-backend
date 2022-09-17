@@ -2,9 +2,9 @@ export interface BaseEntity {
   uuid?: string;
   status?: boolean;
   createdBy?: string;
-  createdAt?: string | Date;
+  createdAt?: string | number | Date;
   updatedBy?: string;
-  updatedAt?: string | Date | null;
+  updatedAt?: string | number | Date | null;
   deletedBy?: string;
-  deletedAt?: string | Date | null;
+  deletedAt?: string | number | Date | null;
 }

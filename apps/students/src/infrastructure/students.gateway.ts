@@ -1,13 +1,13 @@
+import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { Controller } from '@nestjs/common';
+import { StudentsService } from '../students.service';
 import {
   Ctx,
   MessagePattern,
   Payload,
   RedisContext,
 } from '@nestjs/microservices';
-import { Queue } from 'bull';
-import { StudentsService } from '../students.service';
 
 @Controller()
 export class StudentsGateway {

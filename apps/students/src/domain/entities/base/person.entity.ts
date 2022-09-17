@@ -6,5 +6,4 @@ export interface PersonEntity extends BaseEntity {
   lastName: string;
   email: string;
   photo: string | null;
-  status: boolean;
 }
