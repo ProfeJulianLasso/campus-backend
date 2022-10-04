@@ -16,8 +16,8 @@ export class CoursesController {
   //   return this.coursesService.getHello();
   // }
 
-  @MessagePattern('NewStudent')
-  getNotifications(@Payload() data: any, @Ctx() context: RedisContext) {
-    console.log(`Courses:`, data);
-  }
+  // @MessagePattern('NewStudent')
+  // getNotifications(@Payload() data: any, @Ctx() context: RedisContext) {
+  //   console.log(`Courses:`, data);
+  // }
 }

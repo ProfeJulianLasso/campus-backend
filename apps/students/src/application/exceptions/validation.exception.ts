@@ -11,4 +11,12 @@ export class ValidationException extends Error {
   get Error(): JoiValidationError {
     return this.error;
   }
+
+  get Message(): string {
+    return this.message;
+  }
+
+  get Stack(): string | undefined {
+    return this.stack;
+  }
 }

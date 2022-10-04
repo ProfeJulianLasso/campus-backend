@@ -26,9 +26,9 @@
     },
     {
       "label": "Courses",
-      "detail": "nest start courses",
-      "type": "npm",
-      "script": "start-courses",
+      "detail": "nest start courses --watch",
+      "type": "shell",
+      "command": "npm run start-courses:dev",
       "isBackground": true,
       "problemMatcher": {
         "pattern": {
@@ -43,9 +43,9 @@
     },
     {
       "label": "Students",
-      "detail": "nest start students",
-      "type": "npm",
-      "script": "start-students",
+      "detail": "nest start students --watch",
+      "type": "shell",
+      "command": "npm run start-students:dev",
       "isBackground": true,
       "problemMatcher": {
         "pattern": {

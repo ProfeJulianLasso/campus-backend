@@ -1,7 +1,4 @@
-// Entities
-import { BaseEntity } from './base.entity';
-
-export interface PersonEntity extends BaseEntity {
+export interface PersonEntity {
   name: string;
   lastName: string;
   email: string;

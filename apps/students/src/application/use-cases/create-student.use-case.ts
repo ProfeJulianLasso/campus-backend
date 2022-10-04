@@ -9,6 +9,9 @@ import { StudentValueObject } from '../../domain/value-objects/student.value-obj
 import { StudentRepository } from '../../domain/repositories/student.repository';
 import { CreateStudentValidationSchema } from '../validation-schemas/create-student.validation-schema';
 
+// Exceptions
+import { ServerErrorException } from '../exceptions/server-error.exception';
+
 export class CreateStudentUseCase {
   private schema: ObjectSchema<typeof CreateStudentValidationSchema>;
 
@@ -18,10 +21,11 @@ export class CreateStudentUseCase {
     try {
       this.validateData(student);
       const newStudent = this.student$.register(student);
+      // avisar que se creó un estudiante EVENTO DE DOMINIO
       return newStudent;
     } catch (error) {
-      console.error('CreateStudentUseCase', error);
-      throw error;
+      if (error instanceof ValidationException) throw error;
+      else throw new ServerErrorException(error.message, error.code);
     }
   }
 

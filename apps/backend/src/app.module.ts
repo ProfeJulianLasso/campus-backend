@@ -1,3 +1,4 @@
+// import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
@@ -11,6 +12,7 @@ import { AppController } from './app.controller';
         options: {
           host: 'localhost',
           port: 6379,
+          db: 0,
         },
         // transport: Transport.RMQ,
         // options: {
@@ -22,6 +24,14 @@ import { AppController } from './app.controller';
         // },
       },
     ]),
+    // BullModule.registerQueue({
+    //   name: 'backend',
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //     db: 1,
+    //   },
+    // }),
   ],
   controllers: [AppController],
   providers: [],
