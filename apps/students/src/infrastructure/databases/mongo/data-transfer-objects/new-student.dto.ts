@@ -1,7 +1,7 @@
 // Entities
-import { CourseEntity } from './interfaces/course.entity';
-import { StudentEntity } from './interfaces/student.entity';
-import { PersonalInformationEntity } from './interfaces/personal-information.entity';
+import { CourseEntity } from '../interfaces/course.entity';
+import { StudentEntity } from '../interfaces/student.entity';
+import { PersonalInformationEntity } from '../interfaces/personal-information.entity';
 import { BaseDTO } from './base/base.dto';
 
 export class NewStudentDTO extends BaseDTO implements StudentEntity {

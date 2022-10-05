@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "start Contexts",
+      "label": "start Contexts dev",
       "dependsOn": [
         "Courses",
         "Students"
@@ -15,7 +15,7 @@
       }
     },
     {
-      "label": "stop Contexts",
+      "label": "stop Contexts dev",
       "type": "shell",
       "command": "echo ${input:stopContexts}",
       "presentation": {

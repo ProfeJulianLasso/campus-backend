@@ -16,8 +16,8 @@
         "<node_internals>/**"
       ],
       "type": "node",
-      "preLaunchTask": "start Contexts",
-      "postDebugTask": "stop Contexts"
+      "preLaunchTask": "start Contexts dev",
+      "postDebugTask": "stop Contexts dev"
     }
   ]
 }

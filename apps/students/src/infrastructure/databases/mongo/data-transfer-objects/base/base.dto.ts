@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { BaseEntity } from '../interfaces/base/base.entity';
+import { BaseEntity } from '../../interfaces/base/base.entity';
 
 export class BaseDTO implements BaseEntity {
   uuid: string;

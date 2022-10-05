@@ -17,7 +17,7 @@ export class CreateStudentUseCase {
 
   constructor(private readonly student$: StudentRepository) {}
 
-  execute(student: StudentValueObject): StudentValueObject {
+  execute(student: StudentValueObject): Promise<StudentValueObject> {
     try {
       this.validateData(student);
       const newStudent = this.student$.register(student);

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import { BadgeEntity } from '../../../data-transfer-objects/interfaces/badge.entity';
+import { BadgeEntity } from '../interfaces/badge.entity';
 
 export type BadgeDocument = Badge & Document;
 

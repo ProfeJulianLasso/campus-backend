@@ -6,7 +6,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { StudentService } from '../../databases/mongo/services/student.service';
 
 // Data Transfer Objects
-import { StudentDTO } from '../../data-transfer-objects/student.dto';
+import { StudentDTO } from '../../databases/mongo/data-transfer-objects/student.dto';
 
 // Use Cases
 import { GetAllStudentsUseCase } from '../../../application/use-cases/get-all-students.use-case';

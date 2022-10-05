@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { PersonalInformation } from './personal-information.schema';
 import { v4 as uuidv4 } from 'uuid';
-import { StudentEntity } from '../../../data-transfer-objects/interfaces/student.entity';
+import { StudentEntity } from '../interfaces/student.entity';
 
 export type StudentDocument = Student & Document;
 

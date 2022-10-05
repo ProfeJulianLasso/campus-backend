@@ -3,8 +3,8 @@ export interface BaseEntity {
   status?: boolean;
   createdBy?: string;
   createdAt?: string | number | Date;
-  updatedBy?: string;
+  updatedBy?: string | null;
   updatedAt?: string | number | Date | null;
-  deletedBy?: string;
+  deletedBy?: string | null;
   deletedAt?: string | number | Date | null;
 }

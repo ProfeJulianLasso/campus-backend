@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { PersonalInformationEntity } from '../../../data-transfer-objects/interfaces/personal-information.entity';
+import { PersonalInformationEntity } from '../interfaces/personal-information.entity';
 
 export type PersonalInformationDocument = PersonalInformation & Document;
 
