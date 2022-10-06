@@ -1,13 +1,21 @@
 import { Response } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
-import { Controller, Get, HttpStatus, Inject, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Inject,
+  Post,
+  Res,
+} from '@nestjs/common';
 
-@Controller()
+@Controller('student')
 export class AppController {
   constructor(@Inject('STUDENTS') private readonly students: ClientProxy) {}
 
-  @Get('student')
-  async getAllStudents(@Res() response: Response) {
+  @Get()
+  getAllStudents(@Res() response: Response) {
     this.students
       .send<number>('Students.GetAllStudents', {})
       .subscribe((result) => {
@@ -18,5 +26,14 @@ export class AppController {
     // );
     // console.log('data', data);
     // return data;
+  }
+
+  @Post()
+  createStudent(@Res() response: Response, @Body() data: any): void {
+    this.students
+      .send<number>('Students.CreateStudent', data)
+      .subscribe((result) => {
+        response.status(HttpStatus.OK).json(result);
+      });
   }
 }

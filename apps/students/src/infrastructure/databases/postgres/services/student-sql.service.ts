@@ -5,7 +5,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { ServerErrorException } from '../../../../application/exceptions/server-error.exception';
 
 @Injectable()
-export class StudentService implements StudentRepository {
+export class StudentSQLService implements StudentRepository {
   readonly queryRunner: QueryRunner;
 
   constructor(private dataSource: DataSource) {
@@ -25,12 +25,14 @@ export class StudentService implements StudentRepository {
     await this.queryRunner.startTransaction();
     try {
       const newStudent = await this.queryRunner.manager.save(student);
+      console.log('resultado', newStudent);
+      await this.queryRunner.commitTransaction();
       return newStudent;
     } catch (error) {
       await this.queryRunner.rollbackTransaction();
       throw new ServerErrorException(error.message, error.code);
     } finally {
-      this.queryRunner.release();
+      await this.queryRunner.release();
     }
   }
 

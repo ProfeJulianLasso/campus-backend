@@ -7,13 +7,18 @@ import {
   Student,
   StudentSchema,
 } from './infrastructure/databases/mongo/schemas/student.schema';
-import { StudentService } from './infrastructure/databases/mongo/services/student.service';
+import { StudentNoSQLService } from './infrastructure/databases/mongo/services/student-nosql.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
+import { StudentSQLService } from './infrastructure/databases/postgres/services/student-sql.service';
+import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
+import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
@@ -21,12 +26,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        // entities: [],
-        autoLoadEntities: true,
+        entities: [PersonalInformationEntity, StudentEntity],
+        // autoLoadEntities: true,
         synchronize: true,
         logging: process.env.SCOPE === 'production' ? false : true,
       }),
-      inject: [ConfigService],
     }),
     ConfigModule.forRoot({
       envFilePath: `${process.cwd()}/environments/.env.${process.env.SCOPE}`,
@@ -52,7 +56,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     //   },
     // }),
   ],
-  controllers: [GetAllStudentsQuery],
-  providers: [StudentService],
+  controllers: [CreateStudentCommand, GetAllStudentsQuery],
+  providers: [StudentNoSQLService, StudentSQLService],
 })
 export class StudentsModule {}

@@ -1,63 +1,32 @@
-import { CourseEntity } from 'apps/students/src/domain/entities/course.entity';
+// import { CourseEntity } from 'apps/students/src/domain/entities/course.entity';
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseInterface } from '../interfaces/base/base.interface';
-import { StudentInterface } from '../interfaces/student.interface';
+// import { BaseInterface } from '../interfaces/base/base.interface';
+// import { StudentInterface } from '../interfaces/student.interface';
 import { PersonalInformationEntity } from './personal-information.entity';
 
-@Entity({
-  name: 'std_student',
-  schema: 'students',
-})
-@Index(['email', 'deletedAt'], { unique: true })
-export class StudentEntity implements BaseInterface, StudentInterface {
-  // personalInformation: PersonEntity;
-  courses: CourseEntity[];
+@Entity('std_student', { schema: 'students' })
+// export class StudentEntity implements BaseInterface, StudentInterface {
+export class StudentEntity {
   @PrimaryGeneratedColumn('uuid', {
     name: 'std_id',
   })
   uuid: string;
 
-  @OneToOne(() => PersonalInformationEntity)
-  @JoinColumn({
-    name: 'std_personal_information_id',
-    referencedColumnName
-  })
+  @OneToOne(
+    () => PersonalInformationEntity,
+    (personalInformation) => personalInformation.studentId,
+    { cascade: ['insert'], onDelete: 'RESTRICT', onUpdate: 'RESTRICT' },
+  )
   personalInformation: PersonalInformationEntity;
 
-  // @Column({
-  //   name: 'std_name',
-  //   length: 150,
-  //   nullable: false,
-  // })
-  // name: string;
-
-  // @Column({
-  //   name: 'std_last_name',
-  //   length: 150,
-  //   nullable: false,
-  // })
-  // lastName: string;
-
-  // @Column({
-  //   name: 'std_email',
-  //   length: 150,
-  //   nullable: false,
-  // })
-  // email: string;
-
-  // @Column({
-  //   name: 'std_photo',
-  //   length: 500,
-  //   nullable: true,
-  // })
-  // photo: string | null;
+  // TODO: falta la relación con los cursos
+  // courses: CourseEntity[];
 
   @Column({
     name: 'std_status',
@@ -89,9 +58,9 @@ export class StudentEntity implements BaseInterface, StudentInterface {
   })
   updatedAt: Date | null;
 
-  @Column({
+  @Column('character varying', {
     name: 'std_updated_by',
-    nullable: false,
+    nullable: true,
     length: 36,
   })
   updatedBy: string | null;
@@ -103,9 +72,9 @@ export class StudentEntity implements BaseInterface, StudentInterface {
   })
   deletedAt: Date | null;
 
-  @Column({
+  @Column('character varying', {
     name: 'std_deleted_by',
-    nullable: false,
+    nullable: true,
     length: 36,
   })
   deletedBy: string | null;

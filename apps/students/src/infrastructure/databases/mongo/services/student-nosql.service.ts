@@ -6,7 +6,7 @@ import { StudentRepository } from '../../../../domain/repositories/student.repos
 import { StudentValueObject } from 'apps/students/src/domain/value-objects/student.value-object';
 
 @Injectable()
-export class StudentService implements StudentRepository {
+export class StudentNoSQLService implements StudentRepository {
   constructor(
     @InjectModel(Student.name) private studentModel: Model<StudentDocument>,
   ) {}
@@ -18,7 +18,7 @@ export class StudentService implements StudentRepository {
   findById(uuid: string): StudentValueObject {
     throw new Error('Method not implemented.');
   }
-  register(student: StudentValueObject): StudentValueObject {
+  register(student: StudentValueObject): Promise<StudentValueObject> {
     throw new Error('Method not implemented.');
   }
   update(uuid: string, student: StudentValueObject): StudentValueObject {
