@@ -25,7 +25,6 @@ export class StudentSQLService implements StudentRepository {
     await this.queryRunner.startTransaction();
     try {
       const newStudent = await this.queryRunner.manager.save(student);
-      console.log('resultado', newStudent);
       await this.queryRunner.commitTransaction();
       return newStudent;
     } catch (error) {

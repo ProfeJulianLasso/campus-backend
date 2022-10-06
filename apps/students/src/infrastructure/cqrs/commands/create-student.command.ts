@@ -24,9 +24,6 @@ export class CreateStudentCommand {
     studentPersonalInformation: PersonalInformationEntity,
   ): void {
     try {
-      console.log(studentPersonalInformation);
-      // const newStudent = new StudentEntity();
-      // newStudent.personalInformation = studentPersonalInformation;
       studentPersonalInformation.student = new StudentEntity();
       const useCase = new CreateStudentUseCase(this.student$);
       useCase.execute(studentPersonalInformation);

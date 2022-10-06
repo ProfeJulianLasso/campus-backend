@@ -18,7 +18,6 @@ export class CreateStudentUseCase {
   constructor(private readonly student$: StudentRepository) {}
 
   execute(student: any) {
-    console.log('student', student);
     try {
       // this.validateData(student);
       const newStudent = this.student$.register(student);

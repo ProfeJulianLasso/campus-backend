@@ -1,11 +1,5 @@
 // import { CourseEntity } from 'apps/students/src/domain/entities/course.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 // import { BaseInterface } from '../interfaces/base/base.interface';
 // import { StudentInterface } from '../interfaces/student.interface';
 import { PersonalInformationEntity } from './personal-information.entity';
