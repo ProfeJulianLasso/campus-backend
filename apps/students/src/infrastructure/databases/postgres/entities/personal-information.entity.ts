@@ -6,6 +6,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PersonalInformationDTO } from '../data-transfer-objects/personal-information.dto';
+import { StudentDTO } from '../data-transfer-objects/student.dto';
 import { BaseInterface } from '../interfaces/base/base.interface';
 import { PersonalInformationInterface } from '../interfaces/personal-information.interface';
 import { StudentEntity } from './student.entity';
@@ -15,6 +17,22 @@ import { StudentEntity } from './student.entity';
 export class PersonalInformationEntity
   implements BaseInterface, PersonalInformationInterface
 {
+  constructor(
+    personalInformation?: PersonalInformationDTO,
+    student?: StudentDTO,
+  ) {
+    this.uuid = personalInformation?.uuid ?? '';
+    this.name = personalInformation?.name ?? '';
+    this.lastName = personalInformation?.lastName ?? '';
+    this.email = personalInformation?.email ?? '';
+    this.photo = personalInformation?.photo ?? null;
+    if (typeof personalInformation?.createdBy !== 'undefined')
+      this.createdBy = personalInformation.createdBy;
+    if (typeof personalInformation?.createdAt === 'object')
+      this.createdAt = personalInformation.createdAt;
+    if (student instanceof StudentEntity) this.student = student;
+  }
+
   @PrimaryGeneratedColumn('uuid', {
     name: 'pif_id',
   })
@@ -54,13 +72,12 @@ export class PersonalInformationEntity
   })
   photo: string | null;
 
-  @Column({
+  @Column('timestamp without time zone', {
     name: 'pif_created_at',
     nullable: false,
-    type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  createdAt: Date;
+  createdAt: number | Date;
 
   @Column({
     name: 'pif_created_by',
@@ -70,12 +87,11 @@ export class PersonalInformationEntity
   })
   createdBy: string;
 
-  @Column({
+  @Column('timestamp without time zone', {
     name: 'pif_updated_at',
     nullable: true,
-    type: 'timestamptz',
   })
-  updatedAt: Date | null;
+  updatedAt: number | Date | null;
 
   @Column('character varying', {
     name: 'pif_updated_by',
@@ -84,12 +100,11 @@ export class PersonalInformationEntity
   })
   updatedBy: string | null;
 
-  @Column({
+  @Column('timestamp without time zone', {
     name: 'pif_deleted_at',
     nullable: true,
-    type: 'timestamptz',
   })
-  deletedAt: Date | null;
+  deletedAt: number | Date | null;
 
   @Column('character varying', {
     name: 'pif_deleted_by',

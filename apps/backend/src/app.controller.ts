@@ -8,7 +8,10 @@ import {
   Inject,
   Post,
   Res,
+  UseFilters,
 } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { MyRpcExceptionFilter } from './filters/my-rpc-exception.filter';
 
 @Controller('student')
 export class AppController {
@@ -28,12 +31,37 @@ export class AppController {
     // return data;
   }
 
+  // @UseFilters(new MyRpcExceptionFilter())
+  // @Post()
+  // async createStudent(@Res() response: Response, @Body() data: any) {
+  //   try {
+  //     const info = await lastValueFrom(
+  //       this.students.send('Students.CreateStudent', data),
+  //     );
+  //     console.log('SUPER ERROR', info);
+  //     return info;
+  //   } catch (error) {
+  //     console.log('--------------------------', error);
+  //   }
+  //   // this.students
+  //   //   .send<number>('Students.CreateStudent', data)
+  //   //   .subscribe((result) => {
+  //   //     console.log('result!!!!----', result);
+  //   //     response.status(HttpStatus.OK).json(result);
+  //   //   });
+  // }
+
   @Post()
-  createStudent(@Res() response: Response, @Body() data: any): void {
-    this.students
-      .send<number>('Students.CreateStudent', data)
-      .subscribe((result) => {
+  createStudent(@Res() response: Response, @Body() data: any) {
+    this.students.send<number>('Students.CreateStudent', data).subscribe({
+      next: (result) => {
+        console.log('result!!!!----', result);
         response.status(HttpStatus.OK).json(result);
-      });
+      },
+      error: (error) => {
+        console.log('error!!!!----', error);
+        response.status(HttpStatus.BAD_REQUEST).json(error);
+      },
+    });
   }
 }

@@ -6,7 +6,7 @@ import { StudentRepository } from '../../../../domain/repositories/student.repos
 import { StudentValueObject } from 'apps/students/src/domain/value-objects/student.value-object';
 
 @Injectable()
-export class StudentNoSQLService implements StudentRepository {
+export class StudentReadService implements StudentRepository {
   constructor(
     @InjectModel(Student.name) private studentModel: Model<StudentDocument>,
   ) {}

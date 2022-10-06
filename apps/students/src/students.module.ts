@@ -7,10 +7,10 @@ import {
   Student,
   StudentSchema,
 } from './infrastructure/databases/mongo/schemas/student.schema';
-import { StudentNoSQLService } from './infrastructure/databases/mongo/services/student-nosql.service';
+import { StudentReadService } from './infrastructure/databases/mongo/services/student-read.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
-import { StudentSQLService } from './infrastructure/databases/postgres/services/student-sql.service';
+import { StudentWriteService } from './infrastructure/databases/postgres/services/student-write.service';
 import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
 import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
 
@@ -27,7 +27,6 @@ import { StudentEntity } from './infrastructure/databases/postgres/entities/stud
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [PersonalInformationEntity, StudentEntity],
-        // autoLoadEntities: true,
         synchronize: true,
         logging: process.env.SCOPE === 'production' ? false : true,
       }),
@@ -57,6 +56,6 @@ import { StudentEntity } from './infrastructure/databases/postgres/entities/stud
     // }),
   ],
   controllers: [CreateStudentCommand, GetAllStudentsQuery],
-  providers: [StudentNoSQLService, StudentSQLService],
+  providers: [StudentReadService, StudentWriteService],
 })
 export class StudentsModule {}

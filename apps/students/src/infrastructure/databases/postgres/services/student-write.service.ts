@@ -5,7 +5,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { ServerErrorException } from '../../../../application/exceptions/server-error.exception';
 
 @Injectable()
-export class StudentSQLService implements StudentRepository {
+export class StudentWriteService implements StudentRepository {
   readonly queryRunner: QueryRunner;
 
   constructor(private dataSource: DataSource) {
