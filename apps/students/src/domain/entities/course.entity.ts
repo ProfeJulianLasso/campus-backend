@@ -1,21 +1,41 @@
-// Entities
-import { QuizEntity } from './quiz.entity';
-import { EventEntity } from './event.entity';
-import { TopicEntity } from './topic.entity';
-import { BaseEntity } from './base/base.entity';
-import { ActivityEntity } from './activity.entity';
-import { CategoryEntity } from './category.entity';
-import { CertificateEntity } from './certificate.entity';
+// Libraries
+import { BadRequestException } from '@nestjs/common';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
-export interface CourseEntity extends BaseEntity {
+// Entities
+import { BaseEntity } from './base/base.entity';
+
+export class CourseEntity extends BaseEntity {
+  @IsUUID(4, {
+    message:
+      'El ID proporcionado no cumple con las especificaciones de un UUID v4',
+  })
+  uuid: string;
+
+  @IsString()
+  @IsOptional()
   name: string;
+
+  @IsString()
+  @IsOptional()
   description: string;
+
+  @IsString()
+  @IsOptional()
   photo: string;
+
+  @IsString()
+  @IsOptional()
   status: boolean;
-  topics: TopicEntity[];
-  activities: ActivityEntity[];
-  quizzes: QuizEntity[];
-  events: EventEntity[];
-  certificates: CertificateEntity[];
-  category: CategoryEntity[];
+
+  constructor(course?: CourseEntity) {
+    super(course);
+    if (!course?.uuid)
+      throw new BadRequestException('El ID del curso es obligatorio');
+    this.uuid = course.uuid;
+    if (course?.name) this.name = course.name;
+    if (course?.description) this.description = course.description;
+    if (course?.photo) this.photo = course.photo;
+    this.status = course?.status ?? true;
+  }
 }

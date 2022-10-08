@@ -2,6 +2,7 @@
 // import { StudentInterface } from '../interfaces/student.interface';
 
 // Data Transfer Objects
+import { IsBoolean, IsObject, IsOptional, IsUUID } from 'class-validator';
 import { BaseDTO } from './base/base.dto';
 import { PersonalInformationDTO } from './personal-information.dto';
 
@@ -10,18 +11,18 @@ import { PersonalInformationDTO } from './personal-information.dto';
 
 // export class StudentDTO extends BaseDTO implements StudentInterface {
 export class StudentDTO extends BaseDTO {
+  @IsObject()
   personalInformation: PersonalInformationDTO;
   // courses: CourseEntity[];
-  status: boolean;
-  updatedBy: string | null;
-  updatedAt: string | number | Date | null;
-  deletedBy: string | null;
-  deletedAt: string | number | Date | null;
 
-  constructor(student: StudentDTO) {
-    super(student);
-    this.personalInformation = student.personalInformation;
-    // this.courses = student.courses;
-    this.status = student.status ?? true;
-  }
+  @IsBoolean()
+  @IsOptional()
+  status: boolean;
+
+  // constructor(student: StudentDTO) {
+  //   super(student);
+  //   this.personalInformation = student.personalInformation;
+  //   // this.courses = student.courses;
+  //   this.status = student.status ?? true;
+  // }
 }

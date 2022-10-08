@@ -11,7 +11,6 @@ import { RpcException } from '@nestjs/microservices';
 export class MyRpcExceptionFilter implements RpcExceptionFilter<RpcException> {
   catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
     console.log('AQUI-------------', exception);
-    console.log('AQUI-------------', host);
     return throwError(() => exception);
   }
 }

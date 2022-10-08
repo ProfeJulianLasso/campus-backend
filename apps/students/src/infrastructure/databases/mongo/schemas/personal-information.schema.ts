@@ -1,11 +1,14 @@
+// Libraries
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { PersonalInformationEntity } from '../interfaces/personal-information.entity';
+
+// Entities
+import { PersonalInformationEntity } from '../../../../domain/entities/personal-information.entity';
 
 export type PersonalInformationDocument = PersonalInformation & Document;
 
-@Schema({ collection: 'personal-information', versionKey: false })
-export class PersonalInformation implements PersonalInformationEntity {
+@Schema({ versionKey: false })
+export class PersonalInformation extends PersonalInformationEntity {
   @Prop({
     index: true,
     trim: true,
@@ -16,7 +19,7 @@ export class PersonalInformation implements PersonalInformationEntity {
   @Prop({
     index: true,
     trim: true,
-    required: [true, 'Name is required'],
+    required: [true, 'LastName is required'],
   })
   lastName: string;
 

@@ -17,21 +17,21 @@ import { StudentEntity } from './student.entity';
 export class PersonalInformationEntity
   implements BaseInterface, PersonalInformationInterface
 {
-  constructor(
-    personalInformation?: PersonalInformationDTO,
-    student?: StudentDTO,
-  ) {
-    this.uuid = personalInformation?.uuid ?? '';
-    this.name = personalInformation?.name ?? '';
-    this.lastName = personalInformation?.lastName ?? '';
-    this.email = personalInformation?.email ?? '';
-    this.photo = personalInformation?.photo ?? null;
-    if (typeof personalInformation?.createdBy !== 'undefined')
-      this.createdBy = personalInformation.createdBy;
-    if (typeof personalInformation?.createdAt === 'object')
-      this.createdAt = personalInformation.createdAt;
-    if (student instanceof StudentEntity) this.student = student;
-  }
+  // constructor(
+  //   personalInformation?: PersonalInformationDTO,
+  //   student?: StudentDTO,
+  // ) {
+  //   this.uuid = personalInformation?.uuid ?? '';
+  //   this.name = personalInformation?.name ?? '';
+  //   this.lastName = personalInformation?.lastName ?? '';
+  //   this.email = personalInformation?.email ?? '';
+  //   this.photo = personalInformation?.photo ?? null;
+  //   if (typeof personalInformation?.createdBy !== 'undefined')
+  //     this.createdBy = personalInformation.createdBy;
+  //   if (typeof personalInformation?.createdAt === 'object')
+  //     this.createdAt = personalInformation.createdAt;
+  //   if (student instanceof StudentEntity) this.student = student;
+  // }
 
   @PrimaryGeneratedColumn('uuid', {
     name: 'pif_id',

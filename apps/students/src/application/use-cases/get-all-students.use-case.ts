@@ -1,18 +1,13 @@
 // Value Objects
-import { StudentValueObject } from '../../domain/value-objects/student.value-object';
+import { StudentEntity } from '../../domain/entities/student.entity';
 
-// Repositories
-import { StudentRepository } from '../../domain/repositories/student.repository';
-import { ServerErrorException } from '../exceptions/server-error.exception';
+// Services
+import { IStudentRepository } from '../repositories/student.repository';
 
-export class GetAllStudentsUseCase {
-  constructor(private readonly student$: StudentRepository) {}
+export class GetAllStudentsUseCase<T extends StudentEntity> {
+  constructor(private readonly studentRepository: IStudentRepository<T>) {}
 
-  async execute(): Promise<StudentValueObject[]> {
-    try {
-      return await this.student$.findAll();
-    } catch (error) {
-      throw new ServerErrorException(error.message, error.code);
-    }
+  execute(): Promise<T[]> {
+    return this.studentRepository.findAll();
   }
 }

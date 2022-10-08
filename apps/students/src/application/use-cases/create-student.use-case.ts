@@ -1,44 +1,18 @@
-// Libraries
-// import { object, ObjectSchema } from 'joi';
-import { ValidationException } from '../exceptions/validation.exception';
-
-// Value Objects
-import { StudentValueObject } from '../../domain/value-objects/student.value-object';
-
 // Repositories
-import { StudentRepository } from '../../domain/repositories/student.repository';
-import { CreateStudentValidationSchema } from '../validation-schemas/create-student.validation-schema';
+import { IStudentRepository } from '../repositories/student.repository';
 
-// Exceptions
-import { ServerErrorException } from '../exceptions/server-error.exception';
+// Entities
+import { StudentEntity } from '../../domain/entities/student.entity';
+import { PersonalInformationEntity } from '../../domain/entities/personal-information.entity';
 
-export class CreateStudentUseCase {
-  // private schema: ObjectSchema<typeof CreateStudentValidationSchema>;
+export class CreateStudentUseCase<T extends StudentEntity> {
+  constructor(private readonly studentRepository: IStudentRepository<T>) {}
 
-  constructor(private readonly student$: StudentRepository) {}
-
-  execute(student: any) {
-    try {
-      // this.validateData(student);
-      const newStudent = this.student$.register(student);
-      // avisar que se creó un estudiante EVENTO DE DOMINIO
-      return newStudent;
-    } catch (error) {
-      if (error instanceof ValidationException) throw error;
-      else throw new ServerErrorException(error.message, error.code);
-    }
+  execute(personalInformation: PersonalInformationEntity): Promise<T> {
+    const student = new StudentEntity();
+    student.personalInformation = personalInformation;
+    const newStudent = this.studentRepository.create(student);
+    // avisar que se creó un estudiante EVENTO DE DOMINIO
+    return newStudent;
   }
-
-  // private validateData(student: StudentValueObject): boolean {
-  //   this.schema = object(CreateStudentValidationSchema);
-  //   const validationResult = this.schema.validate(student, {
-  //     abortEarly: false,
-  //   });
-  //   if (validationResult.error)
-  //     throw new ValidationException(
-  //       'Correct errors that occurred when creating a new student',
-  //       validationResult.error,
-  //     );
-  //   return true;
-  // }
 }

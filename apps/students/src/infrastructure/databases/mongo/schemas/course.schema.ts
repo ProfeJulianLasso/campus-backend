@@ -4,24 +4,31 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // Entities
-import { StudentEntity } from '../../../../domain/entities/student.entity';
+import { CourseEntity } from '../../../../domain/entities/course.entity';
 
-// Schemas
-import { Course } from './course.schema';
-import { PersonalInformation } from './personal-information.schema';
+export type CourseDocument = Course & Document;
 
-export type StudentDocument = Student & Document;
-
-@Schema({ collection: 'students', versionKey: false })
-export class Student extends StudentEntity {
+@Schema({ versionKey: false })
+export class Course extends CourseEntity {
   @Prop({ index: true, type: String })
   uuid = uuidv4();
 
-  @Prop({ _id: false, required: true })
-  personalInformation: PersonalInformation;
+  @Prop({
+    index: true,
+    trim: true,
+    required: [true, 'Name is required'],
+  })
+  name: string;
 
-  @Prop({ _id: false })
-  courses: Course[];
+  @Prop({
+    index: true,
+    trim: true,
+    required: [true, 'Description is required'],
+  })
+  description: string;
+
+  @Prop({ trim: true })
+  photo: string;
 
   @Prop({
     type: Boolean,
@@ -51,9 +58,6 @@ export class Student extends StudentEntity {
 
   @Prop()
   deletedAt?: Date;
-
-  // // @Prop({ _id: false })
-  // // courses: CourseEntity[];
 }
 
-export const StudentSchema = SchemaFactory.createForClass(Student);
+export const CourseSchema = SchemaFactory.createForClass(Course);

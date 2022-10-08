@@ -23,7 +23,12 @@ export class PersonalInformationDTO
   @IsEmail()
   email: string;
 
-  @IsUrl()
+  @IsUrl(
+    { IsUrl: true },
+    {
+      message: 'La información que se proporciona, no es una URL valida',
+    },
+  )
   @IsOptional()
   photo: string | null;
 

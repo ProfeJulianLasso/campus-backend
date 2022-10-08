@@ -34,7 +34,8 @@ export class CreateStudentCommand {
     @Payload(new ValidationPipe({ transform: true }))
     personalInformation: PersonalInformationDTO,
   ) {
-    this.validateData(personalInformation);
+    console.log(personalInformation);
+    // this.validateData(personalInformation);
     // console.log(personalInformation);
     // const newStudentPersonalInformation = new PersonalInformationEntity(
     //   personalInformation,
@@ -44,30 +45,30 @@ export class CreateStudentCommand {
     // return useCase.execute(newStudentPersonalInformation);
   }
 
-  private validateData(personalInformation: PersonalInformationDTO) {
-    // this.schema = object(NewStudentValidationSchema);
-    const schema = Joi.object({
-      name: Joi.number().required(),
-      // lastName: Joi.string().required(),
-      // email: Joi.string().email().required(),
-      // photo: Joi.alternatives().try(Joi.string().uri().required()),
-    });
-    // this.schema = NewStudentValidationSchema;
+  // private validateData(personalInformation: PersonalInformationDTO) {
+  //   // this.schema = object(NewStudentValidationSchema);
+  //   const schema = Joi.object({
+  //     name: Joi.number().required(),
+  //     // lastName: Joi.string().required(),
+  //     // email: Joi.string().email().required(),
+  //     // photo: Joi.alternatives().try(Joi.string().uri().required()),
+  //   });
+  //   // this.schema = NewStudentValidationSchema;
 
-    schema.validate(personalInformation);
+  //   schema.validate(personalInformation);
 
-    const validationResult = schema.validate(personalInformation, {
-      abortEarly: false,
-    });
-    if (validationResult.error) {
-      console.log('ERRORES APA!!!', validationResult.error);
-      throw new RpcException('Invalid credentials.');
-      return false;
-    }
-    // throw new ValidationException(
-    //   'Correct errors that occurred when creating a new student',
-    //   validationResult.error,
-    // );
-    return true;
-  }
+  //   const validationResult = schema.validate(personalInformation, {
+  //     abortEarly: false,
+  //   });
+  //   if (validationResult.error) {
+  //     console.log('ERRORES APA!!!', validationResult.error);
+  //     throw new RpcException('Invalid credentials.');
+  //     return false;
+  //   }
+  //   // throw new ValidationException(
+  //   //   'Correct errors that occurred when creating a new student',
+  //   //   validationResult.error,
+  //   // );
+  //   return true;
+  // }
 }

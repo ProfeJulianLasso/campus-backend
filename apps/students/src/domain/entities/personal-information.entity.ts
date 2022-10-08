@@ -1,3 +1,3 @@
 import { PersonEntity } from './base/person.entity';
 
-export type PersonalInformationEntity = PersonEntity;
+export class PersonalInformationEntity extends PersonEntity {}
