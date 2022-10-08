@@ -2,22 +2,22 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 
-// Services
-import { StudentReadService } from '../../databases/mongo/services/student-read.service';
-
-// Data Transfer Objects
-import { StudentDTO } from '../../databases/mongo/data-transfer-objects/student.dto';
+// Repositories
+import { StudentReadRepository } from '../../databases/mongo/repositories/student-read.repository';
 
 // Use Cases
 import { GetAllStudentsUseCase } from '../../../application/use-cases/get-all-students.use-case';
+import { StudentDTO } from '../../databases/mongo/data-transfer-objects/student.dto';
 
 @Controller()
 export class GetAllStudentsQuery {
-  constructor(private readonly studentReadService: StudentReadService) {}
+  constructor(private readonly studentReadRepository: StudentReadRepository) {}
 
   @MessagePattern('Students.GetAllStudents')
-  execute() {
-    const useCase = new GetAllStudentsUseCase(this.studentReadService);
+  execute(): Promise<StudentDTO[]> {
+    const useCase = new GetAllStudentsUseCase<StudentDTO>(
+      this.studentReadRepository,
+    );
     return useCase.execute();
   }
 }

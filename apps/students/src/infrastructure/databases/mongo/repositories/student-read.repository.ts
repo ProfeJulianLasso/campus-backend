@@ -2,9 +2,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-// Entities
-import { StudentEntity } from '../../../../domain/entities/student.entity';
-
 // Schemas
 import { Student, StudentDocument } from '../schemas/student.schema';
 
@@ -12,7 +9,9 @@ import { Student, StudentDocument } from '../schemas/student.schema';
 import { IStudentRepository } from '../../../../application/repositories/student.repository';
 import { StudentDTO } from '../data-transfer-objects/student.dto';
 
-export class StudentReadRepository implements IStudentRepository<Student> {
+export class StudentReadRepository
+  implements IStudentRepository<Student, StudentDTO>
+{
   constructor(
     @InjectModel(Student.name) private studentModel: Model<StudentDocument>,
   ) {}
@@ -28,12 +27,25 @@ export class StudentReadRepository implements IStudentRepository<Student> {
     return newStudent.save();
   }
 
-  update(uuid: string, student: StudentDTO): Promise<Student> {
-    const studentUpdated = this.studentModel.findOneAndUpdate(uuid, student);
-    // return studentUpdated;
+  update(student: StudentDTO): Promise<Student | null> {
+    student.updatedBy = student.uuid; // TODO: se debe de establecer quien actualiza cuando se solucione el tema del login
+    student.updatedAt = new Date();
+    return Promise.resolve(
+      this.studentModel.findOneAndUpdate(
+        {
+          $and: [{ uuid: student.uuid }, { deletedAt: null }],
+        },
+        student,
+      ),
+    );
   }
 
-  delete(uuid: string): Promise<Student> {
-    throw new Error('Method not implemented.');
+  delete(uuid: string): Promise<Student | null> {
+    return Promise.resolve(
+      this.studentModel.findOneAndUpdate(
+        { $and: [{ uuid }, { deletedAt: null }] },
+        { deletedBy: uuid, deletedAt: new Date() }, // TODO: se debe de establecer quien elimina cuando se solucione el tema del login
+      ),
+    );
   }
 }

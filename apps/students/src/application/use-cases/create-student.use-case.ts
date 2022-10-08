@@ -6,7 +6,9 @@ import { StudentEntity } from '../../domain/entities/student.entity';
 import { PersonalInformationEntity } from '../../domain/entities/personal-information.entity';
 
 export class CreateStudentUseCase<T extends StudentEntity> {
-  constructor(private readonly studentRepository: IStudentRepository<T>) {}
+  constructor(
+    private readonly studentRepository: IStudentRepository<T, StudentEntity>,
+  ) {}
 
   execute(personalInformation: PersonalInformationEntity): Promise<T> {
     const student = new StudentEntity();

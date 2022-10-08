@@ -7,30 +7,28 @@ import {
   Student,
   StudentSchema,
 } from './infrastructure/databases/mongo/schemas/student.schema';
-import { StudentReadService } from './infrastructure/databases/mongo/services/student-read.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
-import { StudentWriteService } from './infrastructure/databases/postgres/services/student-write.service';
-import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
-import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
+// import { TypeOrmModule } from '@nestjs/typeorm';
+// import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
+// import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
+import { StudentReadRepository } from './infrastructure/databases/mongo/repositories/student-read.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [PersonalInformationEntity, StudentEntity],
-        synchronize: true,
-        logging: process.env.SCOPE === 'production' ? false : true,
-      }),
-    }),
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     type: 'postgres',
+    //     host: configService.get<string>('DB_HOST'),
+    //     port: configService.get<number>('DB_PORT'),
+    //     username: configService.get<string>('DB_USER'),
+    //     password: configService.get<string>('DB_PASSWORD'),
+    //     database: configService.get<string>('DB_DATABASE'),
+    //     entities: [PersonalInformationEntity, StudentEntity],
+    //     synchronize: true,
+    //     logging: process.env.SCOPE === 'production' ? false : true,
+    //   }),
+    // }),
     ConfigModule.forRoot({
       envFilePath: `${process.cwd()}/environments/.env.${process.env.SCOPE}`,
     }),
@@ -55,7 +53,7 @@ import { StudentEntity } from './infrastructure/databases/postgres/entities/stud
     //   },
     // }),
   ],
-  controllers: [CreateStudentCommand, GetAllStudentsQuery],
-  providers: [StudentReadService, StudentWriteService],
+  controllers: [GetAllStudentsQuery],
+  providers: [StudentReadRepository],
 })
 export class StudentsModule {}
