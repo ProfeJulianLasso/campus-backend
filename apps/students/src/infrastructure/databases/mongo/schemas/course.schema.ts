@@ -4,12 +4,12 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // Entities
-import { CourseEntity } from '../../../../domain/entities/course.entity';
+import { CourseDomainEntity } from '../../../../domain/entities/course.domain-entity';
 
 export type CourseDocument = Course & Document;
 
 @Schema({ versionKey: false })
-export class Course extends CourseEntity {
+export class Course extends CourseDomainEntity {
   @Prop({ index: true, type: String })
   uuid = uuidv4();
 

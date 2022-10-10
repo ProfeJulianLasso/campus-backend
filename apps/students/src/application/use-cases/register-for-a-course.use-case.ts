@@ -1,16 +1,16 @@
 // Repositories
-import { IStudentRepository } from '../repositories/student.repository';
+// import { IStudentRepository } from '../repositories/student.repository';
 
 // Services
-import { ICourseService } from '../services/course.service';
+// import { ICourseService } from '../services/course.service';
 
 // Entities
-import { StudentEntity } from '../../domain/entities/student.entity';
-import { CourseEntity } from '../../domain/entities/course.entity';
+import { CourseDomainEntity } from '../../domain/entities/course.domain-entity';
+import { StudentDomainEntity } from '../../domain/entities/student.domain-entity';
 
 export class RegisterForACourseUseCase<
-  T extends StudentEntity,
-  U extends CourseEntity,
+  T extends StudentDomainEntity,
+  U extends CourseDomainEntity,
 > {
   // constructor(
   //   private readonly courseService: ICourseService<U>,

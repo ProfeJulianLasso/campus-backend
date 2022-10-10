@@ -7,30 +7,44 @@ import {
   Student,
   StudentSchema,
 } from './infrastructure/databases/mongo/schemas/student.schema';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
-// import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentReadRepository } from './infrastructure/databases/mongo/repositories/student-read.repository';
+import { PersonalInformationEntity } from './infrastructure/databases/postgres/entities/personal-information.entity';
+import { StudentEntity } from './infrastructure/databases/postgres/entities/student.entity';
+import { CourseEntity } from './infrastructure/databases/postgres/entities/course.entity';
+import { StudentCourseEntity } from './infrastructure/databases/postgres/entities/student-course.entity';
+import { join } from 'path';
+import { StudentWriteRepository } from './infrastructure/databases/postgres/repositories/student-write.repository';
+import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) => ({
-    //     type: 'postgres',
-    //     host: configService.get<string>('DB_HOST'),
-    //     port: configService.get<number>('DB_PORT'),
-    //     username: configService.get<string>('DB_USER'),
-    //     password: configService.get<string>('DB_PASSWORD'),
-    //     database: configService.get<string>('DB_DATABASE'),
-    //     entities: [PersonalInformationEntity, StudentEntity],
-    //     synchronize: true,
-    //     logging: process.env.SCOPE === 'production' ? false : true,
-    //   }),
-    // }),
     ConfigModule.forRoot({
-      envFilePath: `${process.cwd()}/environments/.env.${process.env.SCOPE}`,
+      envFilePath: join(
+        process.cwd(),
+        'environments',
+        `.env.${process.env.SCOPE?.trim()}`,
+      ),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        entities: [
+          CourseEntity,
+          PersonalInformationEntity,
+          StudentEntity,
+          StudentCourseEntity,
+        ],
+        synchronize: true,
+        logging: process.env.SCOPE === 'production' ? false : true,
+      }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -39,12 +53,7 @@ import { StudentReadRepository } from './infrastructure/databases/mongo/reposito
         uri: configService.get<string>('NOSQL_URI'),
       }),
     }),
-    MongooseModule.forFeature([
-      {
-        name: Student.name,
-        schema: StudentSchema,
-      },
-    ]),
+    MongooseModule.forFeature([{ name: Student.name, schema: StudentSchema }]),
     // BullModule.registerQueue({
     //   name: 'test',
     //   redis: {
@@ -53,7 +62,7 @@ import { StudentReadRepository } from './infrastructure/databases/mongo/reposito
     //   },
     // }),
   ],
-  controllers: [GetAllStudentsQuery],
-  providers: [StudentReadRepository],
+  controllers: [GetAllStudentsQuery, CreateStudentCommand],
+  providers: [StudentReadRepository, StudentWriteRepository],
 })
 export class StudentsModule {}

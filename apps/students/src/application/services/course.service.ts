@@ -1,6 +1,6 @@
 // Entities
-import { CourseEntity } from '../../domain/entities/course.entity';
+import { CourseDomainEntity } from '../../domain/entities/course.domain-entity';
 
-export interface ICourseService<T extends CourseEntity> {
+export interface ICourseService<T extends CourseDomainEntity> {
   findById(uuid: string): Promise<T>;
 }

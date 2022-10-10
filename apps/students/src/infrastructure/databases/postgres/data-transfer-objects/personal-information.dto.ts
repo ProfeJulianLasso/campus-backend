@@ -1,42 +1,4 @@
-// import { PersonalInformationInterface } from '../interfaces/personal-information.interface';
-// import { BaseDTO } from './base/base.dto';
-// import {
-//   IsString,
-//   IsOptional,
-//   IsUrl,
-//   IsEmail,
-//   IsNotEmpty,
-// } from 'class-validator';
+// Entities
+import { PersonalInformationDomainEntity } from '../../../../domain/entities/personal-information.domain-entity';
 
-// export class PersonalInformationDTO
-//   extends BaseDTO
-//   implements PersonalInformationInterface
-// {
-//   @IsString()
-//   @IsNotEmpty()
-//   name: string;
-
-//   @IsString()
-//   @IsNotEmpty()
-//   lastName: string;
-
-//   @IsEmail()
-//   email: string;
-
-//   @IsUrl(
-//     { IsUrl: true },
-//     {
-//       message: 'La información que se proporciona, no es una URL valida',
-//     },
-//   )
-//   @IsOptional()
-//   photo: string | null;
-
-//   // constructor(personalInformation: PersonalInformationDTO) {
-//   //   super(personalInformation);
-//   //   this.name = personalInformation.name;
-//   //   this.lastName = personalInformation.lastName;
-//   //   this.email = personalInformation.email;
-//   //   this.photo = personalInformation.photo ?? null;
-//   // }
-// }
+export class PersonalInformationDTO extends PersonalInformationDomainEntity {}

@@ -1,6 +1,6 @@
 import { IsEmail, IsString, IsUrl, Length, IsOptional } from 'class-validator';
 
-export abstract class PersonEntity {
+export abstract class PersonDomainEntity {
   @IsString()
   @Length(3, 150, {
     message: 'El nombre debe ser de mínimo 3 caracteres y máximo 150',
@@ -23,7 +23,7 @@ export abstract class PersonEntity {
   @IsOptional()
   photo: string | null;
 
-  constructor(person?: PersonEntity) {
+  constructor(person?: PersonDomainEntity) {
     if (person?.name) this.name = person.name;
     if (person?.lastName) this.lastName = person.lastName;
     if (person?.email) this.email = person.email;

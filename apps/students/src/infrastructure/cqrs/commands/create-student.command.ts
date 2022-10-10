@@ -1,3 +1,39 @@
+import { Controller, ValidationPipe } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { CreateStudentUseCase } from 'apps/students/src/application/use-cases/create-student.use-case';
+import { PersonalInformationDTO } from '../../databases/postgres/data-transfer-objects/personal-information.dto';
+import { StudentDTO } from '../../databases/postgres/data-transfer-objects/student.dto';
+import { PersonalInformationEntity } from '../../databases/postgres/entities/personal-information.entity';
+import { StudentEntity } from '../../databases/postgres/entities/student.entity';
+import { StudentWriteRepository } from '../../databases/postgres/repositories/student-write.repository';
+
+@Controller()
+export class CreateStudentCommand {
+  constructor(
+    private readonly studentWriteRepository: StudentWriteRepository,
+  ) {}
+
+  @MessagePattern('Students.CreateStudent')
+  execute(
+    @Payload(new ValidationPipe({ transform: true }))
+    personalInformation: PersonalInformationDTO,
+  ): Promise<StudentDTO> {
+    const newStudent = this.transformData(personalInformation);
+    const useCase = new CreateStudentUseCase(this.studentWriteRepository);
+    return useCase.execute(newStudent);
+  }
+
+  private transformData(
+    personalInformation: PersonalInformationDTO,
+  ): PersonalInformationEntity {
+    const newPersonalInformation = new PersonalInformationEntity(
+      personalInformation,
+      new StudentEntity(),
+    );
+    return newPersonalInformation;
+  }
+}
+
 // // Libraries
 // import {
 //   BadRequestException,
@@ -21,6 +57,7 @@
 // import * as Joi from 'joi';
 // import { NewStudentValidationSchema } from 'apps/students/src/application/validation-schemas/new-student.validation-schema';
 // import { ValidationException } from 'apps/students/src/application/exceptions/validation.exception';
+// import { StudentWriteRepository } from '../../databases/postgres/repositoies/student-write.repository';
 
 // @Controller()
 // export class CreateStudentCommand {

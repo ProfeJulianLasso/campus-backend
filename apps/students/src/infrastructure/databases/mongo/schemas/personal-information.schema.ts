@@ -3,12 +3,12 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // Entities
-import { PersonalInformationEntity } from '../../../../domain/entities/personal-information.entity';
+import { PersonalInformationDomainEntity } from '../../../../domain/entities/personal-information.domain-entity';
 
 export type PersonalInformationDocument = PersonalInformation & Document;
 
 @Schema({ versionKey: false })
-export class PersonalInformation extends PersonalInformationEntity {
+export class PersonalInformation extends PersonalInformationDomainEntity {
   @Prop({
     index: true,
     trim: true,

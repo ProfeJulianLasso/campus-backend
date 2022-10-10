@@ -1,11 +1,11 @@
 // Libraries
 import { BadRequestException } from '@nestjs/common';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 // Entities
-import { BaseEntity } from './base/base.entity';
+import { BaseDomainEntity } from './base/base.domain-entity';
 
-export class CourseEntity extends BaseEntity {
+export abstract class CourseDomainEntity extends BaseDomainEntity {
   @IsUUID(4, {
     message:
       'El ID proporcionado no cumple con las especificaciones de un UUID v4',
@@ -13,14 +13,17 @@ export class CourseEntity extends BaseEntity {
   uuid: string;
 
   @IsString()
+  @MaxLength(200)
   @IsOptional()
   name: string;
 
   @IsString()
+  @MaxLength(2048)
   @IsOptional()
   description: string;
 
   @IsString()
+  @MaxLength(500)
   @IsOptional()
   photo: string;
 
@@ -28,11 +31,9 @@ export class CourseEntity extends BaseEntity {
   @IsOptional()
   status: boolean;
 
-  constructor(course?: CourseEntity) {
+  constructor(course?: CourseDomainEntity) {
     super(course);
-    if (!course?.uuid)
-      throw new BadRequestException('El ID del curso es obligatorio');
-    this.uuid = course.uuid;
+    if (course?.uuid) this.uuid = course.uuid;
     if (course?.name) this.name = course.name;
     if (course?.description) this.description = course.description;
     if (course?.photo) this.photo = course.photo;

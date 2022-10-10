@@ -1,4 +1,4 @@
 // Entities
-import { StudentEntity } from '../../../../domain/entities/student.entity';
+import { StudentDomainEntity } from '../../../../domain/entities/student.domain-entity';
 
-export class StudentDTO extends StudentEntity {}
+export class StudentDTO extends StudentDomainEntity {}

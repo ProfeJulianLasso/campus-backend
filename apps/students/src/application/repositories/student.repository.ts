@@ -1,8 +1,12 @@
-import { StudentEntity } from '../../domain/entities/student.entity';
+import { StudentDomainEntity } from '../../domain/entities/student.domain-entity';
+import { StudentValueObject } from '../../domain/value-objects/student.value-object';
+import { PersonalInformationValueObject } from '../../domain/value-objects/personal-information.value-object';
 
-export interface IStudentRepository<T extends StudentEntity, U> {
+export interface IStudentRepository<
+  T extends StudentDomainEntity | StudentValueObject,
+> {
   findAll(): Promise<T[]>;
-  create(student: U): Promise<T>;
-  update(student: U): Promise<T | null>;
+  create(student: T | PersonalInformationValueObject): Promise<T>;
+  update(student: T | StudentValueObject): Promise<T | null>;
   delete(uuid: string): Promise<T | null>;
 }

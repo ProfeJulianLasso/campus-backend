@@ -1,4 +1,4 @@
 // Entities
-import { PersonalInformationEntity } from '../../../../domain/entities/personal-information.entity';
+import { PersonalInformationDomainEntity } from '../../../../domain/entities/personal-information.domain-entity';
 
-export class PersonalInformationDTO extends PersonalInformationEntity {}
+export class PersonalInformationDTO extends PersonalInformationDomainEntity {}

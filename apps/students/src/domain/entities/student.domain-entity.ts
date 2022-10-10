@@ -2,11 +2,11 @@
 import { IsBoolean, IsObject, IsOptional } from 'class-validator';
 
 // Entities
-import { CourseEntity } from './course.entity';
-import { BaseEntity } from './base/base.entity';
-import { PersonalInformationEntity } from './personal-information.entity';
+import { CourseDomainEntity } from './course.domain-entity';
+import { BaseDomainEntity } from './base/base.domain-entity';
+import { PersonalInformationDomainEntity } from './personal-information.domain-entity';
 
-export class StudentEntity extends BaseEntity {
+export abstract class StudentDomainEntity extends BaseDomainEntity {
   @IsBoolean({ message: 'El estado es falso o verdadero' })
   @IsOptional()
   status: boolean;
@@ -14,13 +14,13 @@ export class StudentEntity extends BaseEntity {
   @IsObject({
     message: 'La información personal no cumple con los datos requeridos',
   })
-  personalInformation: PersonalInformationEntity;
+  personalInformation: PersonalInformationDomainEntity;
 
   @IsObject()
   @IsOptional()
-  courses: CourseEntity[];
+  courses: CourseDomainEntity[];
 
-  constructor(student?: StudentEntity) {
+  constructor(student?: StudentDomainEntity) {
     super(student);
     this.status = student?.status ?? true;
     if (student?.personalInformation)
@@ -28,7 +28,7 @@ export class StudentEntity extends BaseEntity {
     if (student?.courses) this.courses = student.courses;
   }
 
-  registerForACourse(course: CourseEntity) {
+  registerForACourse(course: CourseDomainEntity) {
     this.courses.push(course);
   }
 }

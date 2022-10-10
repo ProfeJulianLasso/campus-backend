@@ -1,13 +1,11 @@
 // Value Objects
-import { StudentEntity } from '../../domain/entities/student.entity';
+import { StudentDomainEntity } from '../../domain/entities/student.domain-entity';
 
 // Services
 import { IStudentRepository } from '../repositories/student.repository';
 
-export class GetAllStudentsUseCase<T extends StudentEntity> {
-  constructor(
-    private readonly studentRepository: IStudentRepository<T, StudentEntity>,
-  ) {}
+export class GetAllStudentsUseCase<T extends StudentDomainEntity> {
+  constructor(private readonly studentRepository: IStudentRepository<T>) {}
 
   execute(): Promise<T[]> {
     return this.studentRepository.findAll();

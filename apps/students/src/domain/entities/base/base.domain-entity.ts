@@ -1,7 +1,7 @@
 import { IsDate, IsOptional, IsUUID } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-export abstract class BaseEntity {
+export abstract class BaseDomainEntity {
   @IsUUID(4, {
     message:
       'El ID proporcionado no cumple con las especificaciones de un UUID v4',
@@ -48,10 +48,10 @@ export abstract class BaseEntity {
   @IsOptional()
   deletedAt?: string | number | Date | null;
 
-  constructor(base?: BaseEntity) {
+  constructor(base?: BaseDomainEntity) {
     this.uuid = base?.uuid ?? uuid();
     this.createdBy = base?.createdBy ?? '00000000-0000-0000-0000-000000000000';
-    this.createdAt = base?.createdAt ?? Date.now();
+    this.createdAt = base?.createdAt ?? new Date().toISOString();
     if (base?.updatedBy) this.updatedBy = base.updatedBy;
     if (base?.updatedAt) this.updatedAt = base.updatedAt;
     if (base?.deletedBy) this.deletedBy = base.deletedBy;

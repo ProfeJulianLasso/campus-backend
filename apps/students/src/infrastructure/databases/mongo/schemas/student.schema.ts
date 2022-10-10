@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // Entities
-import { StudentEntity } from '../../../../domain/entities/student.entity';
+import { StudentDomainEntity } from '../../../../domain/entities/student.domain-entity';
 
 // Schemas
 import { Course } from './course.schema';
@@ -13,7 +13,7 @@ import { PersonalInformation } from './personal-information.schema';
 export type StudentDocument = Student & Document;
 
 @Schema({ collection: 'students', versionKey: false })
-export class Student extends StudentEntity {
+export class Student extends StudentDomainEntity {
   @Prop({ index: true, type: String })
   uuid = uuidv4();
 
@@ -51,9 +51,6 @@ export class Student extends StudentEntity {
 
   @Prop()
   deletedAt?: Date;
-
-  // // @Prop({ _id: false })
-  // // courses: CourseEntity[];
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

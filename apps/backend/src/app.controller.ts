@@ -51,9 +51,11 @@ export class AppController {
   //   //   });
   // }
 
+  @UseFilters(new MyRpcExceptionFilter())
   @Post()
   createStudent(@Res() response: Response, @Body() data: any) {
-    this.students.send<number>('Students.CreateStudent', data).subscribe({
+    console.log('controller', data);
+    this.students.emit('Students.CreateStudent', data).subscribe({
       next: (result) => {
         console.log('result!!!!----', result);
         response.status(HttpStatus.OK).json(result);
