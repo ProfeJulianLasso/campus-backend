@@ -1,26 +1,40 @@
-import { Controller, ValidationPipe } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateStudentUseCase } from 'apps/students/src/application/use-cases/create-student.use-case';
+import { instanceToPlain } from 'class-transformer';
 import { PersonalInformationDTO } from '../../databases/postgres/data-transfer-objects/personal-information.dto';
 import { StudentDTO } from '../../databases/postgres/data-transfer-objects/student.dto';
 import { PersonalInformationEntity } from '../../databases/postgres/entities/personal-information.entity';
 import { StudentEntity } from '../../databases/postgres/entities/student.entity';
 import { StudentWriteRepository } from '../../databases/postgres/repositories/student-write.repository';
+import { StudentCreatedSender } from '../../events/senders/student-created.sender';
+import { StudentCreatedSenderRsync } from './events/senders/student-created.sender-rsync';
 
 @Controller()
 export class CreateStudentCommand {
   constructor(
+    private readonly studentCreatedSender: StudentCreatedSender,
     private readonly studentWriteRepository: StudentWriteRepository,
+    private readonly studentCreatedSenderRsync: StudentCreatedSenderRsync,
   ) {}
 
   @MessagePattern('Students.CreateStudent')
-  execute(
-    @Payload(new ValidationPipe({ transform: true }))
+  async execute(
+    @Payload()
     personalInformation: PersonalInformationDTO,
   ): Promise<StudentDTO> {
     const newStudent = this.transformData(personalInformation);
-    const useCase = new CreateStudentUseCase(this.studentWriteRepository);
-    return useCase.execute(newStudent);
+    const useCase = new CreateStudentUseCase(
+      this.studentWriteRepository,
+      this.studentCreatedSender,
+    );
+    const answer = useCase.execute(newStudent);
+    answer.then((data) => {
+      this.studentCreatedSenderRsync.enqueue(
+        JSON.stringify(instanceToPlain(data)),
+      );
+    });
+    return answer;
   }
 
   private transformData(

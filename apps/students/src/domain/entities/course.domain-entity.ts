@@ -1,5 +1,4 @@
 // Libraries
-import { BadRequestException } from '@nestjs/common';
 import { IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 // Entities

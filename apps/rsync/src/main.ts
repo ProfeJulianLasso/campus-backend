@@ -1,18 +1,13 @@
 // Libraries
-import {
-  BadRequestException,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-// Modules
-import { StudentsModule } from './students.module';
+// Main Module
+import { RsyncModule } from './rsync.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    StudentsModule,
+    RsyncModule,
     {
       transport: Transport.REDIS,
       options: {
@@ -29,23 +24,6 @@ async function bootstrap() {
       // },
     },
   );
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        return new BadRequestException(
-          validationErrors.map((error) => {
-            delete error.target;
-            return error;
-          }),
-        );
-      },
-    }),
-  );
-
   await app.listen();
 }
 bootstrap();

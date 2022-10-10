@@ -26,9 +26,10 @@ export class StudentWriteRepository implements IStudentRepository<StudentDTO> {
       await this.queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error.message);
       //   throw new ServerErrorException(error.message, error.code);
-    } finally {
-      await this.queryRunner.release();
     }
+    // finally {
+    //   await this.queryRunner.release();
+    // }
   }
 
   update(student: StudentDTO): Promise<StudentDTO | null> {

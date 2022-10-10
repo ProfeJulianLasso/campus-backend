@@ -5,7 +5,8 @@
       "label": "start Contexts dev",
       "dependsOn": [
         "Courses",
-        "Students"
+        "Students",
+        "Rsync",
       ],
       "presentation": {
         "reveal": "always",
@@ -46,6 +47,23 @@
       "detail": "nest start students --watch",
       "type": "shell",
       "command": "npm run start-students:dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".",
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "webpack",
+          "endsPattern": "successfully"
+        }
+      }
+    },
+    {
+      "label": "Rsync",
+      "detail": "nest start rsync --watch",
+      "type": "shell",
+      "command": "npm run start-rsync:dev",
       "isBackground": true,
       "problemMatcher": {
         "pattern": {

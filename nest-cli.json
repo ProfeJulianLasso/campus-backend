@@ -44,6 +44,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/courses/tsconfig.app.json"
       }
+    },
+    "rsync": {
+      "type": "application",
+      "root": "apps/rsync",
+      "entryFile": "main",
+      "sourceRoot": "apps/rsync/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rsync/tsconfig.app.json"
+      }
     }
   }
 }

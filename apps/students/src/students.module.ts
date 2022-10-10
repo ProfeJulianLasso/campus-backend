@@ -1,4 +1,4 @@
-// import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -16,6 +16,8 @@ import { StudentCourseEntity } from './infrastructure/databases/postgres/entitie
 import { join } from 'path';
 import { StudentWriteRepository } from './infrastructure/databases/postgres/repositories/student-write.repository';
 import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
+import { StudentCreatedSender } from './infrastructure/events/senders/student-created.sender';
+import { StudentCreatedSenderRsync } from './infrastructure/cqrs/commands/events/senders/student-created.sender-rsync';
 
 @Module({
   imports: [
@@ -54,15 +56,42 @@ import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-stud
       }),
     }),
     MongooseModule.forFeature([{ name: Student.name, schema: StudentSchema }]),
-    // BullModule.registerQueue({
-    //   name: 'test',
-    //   redis: {
-    //     host: 'localhost',
-    //     port: 6379,
-    //   },
+    BullModule.registerQueue(
+      {
+        name: 'campus',
+        redis: {
+          host: 'localhost',
+          port: 6379,
+          db: 0,
+        },
+      },
+      {
+        name: 'rsync',
+        redis: {
+          host: 'localhost',
+          port: 6379,
+          db: 1,
+        },
+      },
+    ),
+    // BullModule.registerQueueAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     name: configService.get<string>('BROKER_QUEUE_NAME'),
+    //     redis: {
+    //       host: configService.get<string>('BROKER_HOST'),
+    //       port: configService.get<number>('BROKER_PORT'),
+    //       db: configService.get<number>('BROKER_DATABASE'),
+    //     },
+    //   }),
     // }),
   ],
   controllers: [GetAllStudentsQuery, CreateStudentCommand],
-  providers: [StudentReadRepository, StudentWriteRepository],
+  providers: [
+    StudentCreatedSender,
+    StudentCreatedSenderRsync,
+    StudentReadRepository,
+    StudentWriteRepository,
+  ],
 })
 export class StudentsModule {}
