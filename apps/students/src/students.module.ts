@@ -17,7 +17,7 @@ import { join } from 'path';
 import { StudentWriteRepository } from './infrastructure/databases/postgres/repositories/student-write.repository';
 import { CreateStudentCommand } from './infrastructure/cqrs/commands/create-student.command';
 import { StudentCreatedSender } from './infrastructure/events/senders/student-created.sender';
-import { StudentCreatedSenderRsync } from './infrastructure/cqrs/commands/events/senders/student-created.sender-rsync';
+import { StudentCreatedRsyncSender } from './infrastructure/events/rsync-senders/student-created.rsync-sender';
 
 @Module({
   imports: [
@@ -89,7 +89,7 @@ import { StudentCreatedSenderRsync } from './infrastructure/cqrs/commands/events
   controllers: [GetAllStudentsQuery, CreateStudentCommand],
   providers: [
     StudentCreatedSender,
-    StudentCreatedSenderRsync,
+    StudentCreatedRsyncSender,
     StudentReadRepository,
     StudentWriteRepository,
   ],

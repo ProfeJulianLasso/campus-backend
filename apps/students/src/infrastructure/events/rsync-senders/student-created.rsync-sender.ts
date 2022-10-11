@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { StudentCreatedDomainEvent } from 'apps/students/src/domain/events/student-created.domain-event';
 
 @Injectable()
-export class StudentCreatedSenderRsync extends StudentCreatedDomainEvent {
+export class StudentCreatedRsyncSender extends StudentCreatedDomainEvent {
   constructor(@InjectQueue('rsync') private campusQueue: Queue) {
     super();
   }

@@ -1,21 +1,22 @@
 import { Controller } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateStudentUseCase } from 'apps/students/src/application/use-cases/create-student.use-case';
-import { instanceToPlain } from 'class-transformer';
 import { PersonalInformationDTO } from '../../databases/postgres/data-transfer-objects/personal-information.dto';
 import { StudentDTO } from '../../databases/postgres/data-transfer-objects/student.dto';
 import { PersonalInformationEntity } from '../../databases/postgres/entities/personal-information.entity';
 import { StudentEntity } from '../../databases/postgres/entities/student.entity';
 import { StudentWriteRepository } from '../../databases/postgres/repositories/student-write.repository';
 import { StudentCreatedSender } from '../../events/senders/student-created.sender';
-import { StudentCreatedSenderRsync } from './events/senders/student-created.sender-rsync';
+import { StudentCreatedRsyncSender } from '../../events/rsync-senders/student-created.rsync-sender';
+import * as io from 'socket.io-client';
 
 @Controller()
 export class CreateStudentCommand {
   constructor(
     private readonly studentCreatedSender: StudentCreatedSender,
     private readonly studentWriteRepository: StudentWriteRepository,
-    private readonly studentCreatedSenderRsync: StudentCreatedSenderRsync,
+    private readonly studentCreatedSenderRsync: StudentCreatedRsyncSender,
   ) {}
 
   @MessagePattern('Students.CreateStudent')
@@ -30,9 +31,16 @@ export class CreateStudentCommand {
     );
     const answer = useCase.execute(newStudent);
     answer.then((data) => {
+      // Rsync
       this.studentCreatedSenderRsync.enqueue(
         JSON.stringify(instanceToPlain(data)),
       );
+      // Websocket
+      const socket = io.connect('ws://localhost:3000');
+      socket.on('connect', function () {
+        console.log('Connected');
+        socket.emit('StudentCreated', 'todo ok').close();
+      });
     });
     return answer;
   }

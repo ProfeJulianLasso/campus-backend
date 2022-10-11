@@ -12,5 +12,6 @@ export class StudentStudentCreatedListener {
       JSON.parse(typeof job.data === 'string' ? job.data : ''),
     );
     job.progress(1);
+    console.log('rsync', data);
   }
 }
